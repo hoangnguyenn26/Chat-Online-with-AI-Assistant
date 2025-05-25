@@ -4,3 +4,86 @@
 2025-05-25 13:55:15.744 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
 2025-05-25 13:55:15.746 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
 2025-05-25 13:55:15.747 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-25 14:33:30.446 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (105ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [ChatAppDb_MVP];
+2025-05-25 14:33:30.518 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (44ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [ChatAppDb_MVP] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-05-25 14:33:30.530 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-25 14:33:30.547 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+2025-05-25 14:33:30.593 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+2025-05-25 14:33:30.600 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-25 14:33:30.601 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-05-25 14:33:30.608 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-05-25 14:33:30.626 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Users] (
+    [Id] uniqueidentifier NOT NULL,
+    [ExternalId] nvarchar(256) NULL,
+    [Email] nvarchar(256) NOT NULL,
+    [DisplayName] nvarchar(256) NOT NULL,
+    [AvatarUrl] nvarchar(2048) NULL,
+    [ProviderName] nvarchar(50) NULL,
+    [LastSeenUtc] datetime2 NULL,
+    [CreatedAtUtc] datetime2 NOT NULL,
+    [UpdatedAtUtc] datetime2 NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([Id])
+);
+2025-05-25 14:33:30.628 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [PrivateMessages] (
+    [Id] uniqueidentifier NOT NULL,
+    [SenderId] uniqueidentifier NOT NULL,
+    [ReceiverId] uniqueidentifier NOT NULL,
+    [Content] nvarchar(max) NOT NULL,
+    [TimestampUtc] datetime2 NOT NULL,
+    [IsRead] bit NOT NULL,
+    [IsFromAI] bit NOT NULL,
+    [CreatedAtUtc] datetime2 NOT NULL,
+    [UpdatedAtUtc] datetime2 NOT NULL,
+    CONSTRAINT [PK_PrivateMessages] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PrivateMessages_Users_ReceiverId] FOREIGN KEY ([ReceiverId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PrivateMessages_Users_SenderId] FOREIGN KEY ([SenderId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+);
+2025-05-25 14:33:30.629 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [UserConnections] (
+    [ConnectionId] nvarchar(450) NOT NULL,
+    [UserId] uniqueidentifier NOT NULL,
+    [ConnectedAtUtc] datetime2 NOT NULL,
+    CONSTRAINT [PK_UserConnections] PRIMARY KEY ([ConnectionId]),
+    CONSTRAINT [FK_UserConnections_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+);
+2025-05-25 14:33:30.630 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_PrivateMessages_ReceiverId] ON [PrivateMessages] ([ReceiverId]);
+2025-05-25 14:33:30.632 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_PrivateMessages_SenderId_ReceiverId_TimestampUtc] ON [PrivateMessages] ([SenderId], [ReceiverId], [TimestampUtc]);
+2025-05-25 14:33:30.633 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_UserConnections_UserId] ON [UserConnections] ([UserId]);
+2025-05-25 14:33:30.634 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Users_Email] ON [Users] ([Email]);
+2025-05-25 14:33:30.635 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Users_ExternalId] ON [Users] ([ExternalId]);
+2025-05-25 14:33:30.637 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250525072731_InitialChatMVPSchema', N'9.0.5');
+2025-05-25 14:33:30.641 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result

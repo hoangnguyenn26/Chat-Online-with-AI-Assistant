@@ -1,8 +1,10 @@
 ﻿using ChatApp.Api.Middleware;
 using ChatApp.Application.Mappings;
 using ChatApp.Application.Validators;
+using ChatApp.Infrastructure.Persistence.DbContext;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 // ----- Cấu hình Serilog ban đầu (trước khi builder.Build()) -----
@@ -56,15 +58,17 @@ builder.Services.AddCors(options =>
 
 
 // ----- Bắt đầu cấu hình DbContext (sẽ thêm DbSet sau) -----
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+//,
 //         sqlServerOptionsAction: sqlOptions =>
 //         {
 //             // sqlOptions.EnableRetryOnFailure( // Tạm thời comment out để tránh lỗi với transaction thủ công
 //             //     maxRetryCount: 5,
 //             //     maxRetryDelay: TimeSpan.FromSeconds(30),
 //             //     errorNumbersToAdd: null);
-//         }));
+//         }
+));
 // ----- Kết thúc DbContext -----
 
 // ----- Đăng ký các Interface và Implementation -----
