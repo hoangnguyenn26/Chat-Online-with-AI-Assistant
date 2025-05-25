@@ -1,13 +1,15 @@
 ﻿using ChatApp.Api.Middleware;
 using ChatApp.Application.Mappings;
+using ChatApp.Application.Settings;
 using ChatApp.Application.Validators;
 using ChatApp.Infrastructure.Persistence.DbContext;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-// ----- Cấu hình Serilog ban đầu (trước khi builder.Build()) -----
 // Đọc cấu hình từ appsettings.json
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(new ConfigurationBuilder()
@@ -15,9 +17,28 @@ Log.Logger = new LoggerConfiguration()
         .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
         .AddEnvironmentVariables()
         .Build())
-    .CreateBootstrapLogger(); // Dùng tạm logger này cho đến khi Host được build
+    .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("GoogleAuthSettings"));
+var googleAuthSettings = builder.Configuration.GetSection("GoogleAuthSettings").Get<GoogleAuthSettings>()
+                       ?? throw new InvalidOperationException("GoogleAuthSettings is not configured correctly in user secrets or appsettings.");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.LoginPath = "/auth/login-google";
+    options.AccessDeniedPath = "/auth/access-denied";
+})
+.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+{
+    options.ClientId = googleAuthSettings.ClientId;
+    options.ClientSecret = googleAuthSettings.ClientSecret;
+});
 
 // ----- Sử dụng Serilog cho Host -----
 builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -38,15 +59,14 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(SampleValidator).Assembly);
 
-// --- Swagger/OpenAPI (Thường đã có sẵn) ---
+// --- Swagger/OpenAPI---
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "ChatApp API", Version = "v1" });
-    // Cấu hình JWT cho Swagger sẽ thêm sau
 });
 
-// --- CORS Policy (Cho phép Angular dev server) ---
+// --- CORS Policy ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDevClient",
@@ -69,10 +89,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //             //     errorNumbersToAdd: null);
 //         }
 ));
-// ----- Kết thúc DbContext -----
+
 
 // ----- Đăng ký các Interface và Implementation -----
-// Ví dụ:
 // builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // builder.Services.AddScoped<ITokenService, TokenService>();
 // builder.Services.AddScoped<IUserService, UserService>();
@@ -82,7 +101,6 @@ var app = builder.Build();
 
 // ----- Configure the HTTP request pipeline -----
 
-// Sử dụng Global Error Handling Middleware (sẽ tạo sau)
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -98,9 +116,9 @@ app.UseSerilogRequestLogging();
 
 app.UseRouting();
 
-app.UseCors("AllowAngularDevClient"); // Đặt CORS ở đây, trước Auth
+app.UseCors("AllowAngularDevClient");
 
-// app.UseAuthentication();
+app.UseAuthentication();
 // app.UseAuthorization();
 
 app.MapControllers();
