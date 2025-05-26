@@ -8,6 +8,7 @@
         public string? AvatarUrl { get; set; }
         public string? ProviderName { get; set; } // "Google", "Facebook"
         public DateTime? LastSeenUtc { get; set; }
+        public bool IsActive { get; set; } = true;
 
         // Navigation Properties
         public virtual ICollection<UserConnection> Connections { get; set; } = new List<UserConnection>();
