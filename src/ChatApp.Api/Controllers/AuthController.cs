@@ -1,4 +1,5 @@
-﻿using ChatApp.Domain.Entities;
+﻿using ChatApp.Application.Interfaces.Services;
+using ChatApp.Domain.Entities;
 using ChatApp.Infrastructure.Persistence.DbContext;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,13 +16,13 @@ namespace ChatApp.Api.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<AuthController> _logger;
-        // private readonly ITokenService _tokenService;
+        private readonly ITokenService _tokenService;
 
-        public AuthController(ApplicationDbContext context, ILogger<AuthController> logger /*, ITokenService tokenService */)
+        public AuthController(ApplicationDbContext context, ILogger<AuthController> logger, ITokenService tokenService)
         {
             _context = context;
             _logger = logger;
-            // _tokenService = tokenService;
+            _tokenService = tokenService;
         }
 
         [HttpGet("login-google")]
@@ -30,7 +31,7 @@ namespace ChatApp.Api.Controllers
             _logger.LogInformation("Initiating Google login. Client return URL: {ReturnUrl}", returnUrl);
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action(nameof(ProcessGoogleResponse)), // Action sẽ xử lý sau khi Google middleware tạo cookie
+                RedirectUri = Url.Action(nameof(ProcessGoogleResponse)),
                 Items = { { "LoginProvider", "Google" }, { "ReturnUrl", returnUrl! } }
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
@@ -123,20 +124,15 @@ namespace ChatApp.Api.Controllers
 
             await _context.SaveChangesAsync();
 
-            // --- TẠO JWT TOKEN CỦA ỨNG DỤNG BẠN ---
-            // string appJwtToken = _tokenService.GenerateJwtToken(user); // Giả sử bạn đã có _tokenService
-            _logger.LogInformation("User {UserId} ({Email}) processed. JWT generation (TODO).", user.Id, user.Email);
+            var userRoles = new List<string> { "User" };
+            string appJwtToken = _tokenService.CreateToken(user, userRoles);
 
-
-            // Đăng xuất khỏi cookie scheme trung gian của Google
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            string? finalClientReturnUrl = authenticateResult.Properties?.Items["ReturnUrl"] ?? "http://localhost:4200/auth-callback";
+            var angularCallbackUrl = "http://localhost:4200/auth-callback";
+            _logger.LogInformation("Redirecting to Angular client with token: {AngularCallbackUrl}", angularCallbackUrl);
 
-            // Khi có JWT, sẽ là: return Redirect($"{finalClientReturnUrl}?token={appJwtToken}");
-            // Tạm thời redirect với thông tin user để Angular xử lý (hoặc có thể chỉ là một tham số success=true)
-            _logger.LogInformation("Redirecting to client: {ClientUrl}", finalClientReturnUrl);
-            return Redirect($"{finalClientReturnUrl}?userId={user.Id}&email={user.Email}&displayName={Uri.EscapeDataString(user.DisplayName)}&avatarUrl={Uri.EscapeDataString(avatarUrl ?? string.Empty)}");
+            return Redirect($"{angularCallbackUrl}?token={Uri.EscapeDataString(appJwtToken)}&userId={user.Id}&email={Uri.EscapeDataString(user.Email)}&displayName={Uri.EscapeDataString(user.DisplayName)}&avatarUrl={Uri.EscapeDataString(user.AvatarUrl ?? "")}");
         }
 
         // [HttpPost("logout")] 

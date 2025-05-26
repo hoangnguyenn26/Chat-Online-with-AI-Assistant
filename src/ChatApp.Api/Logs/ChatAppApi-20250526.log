@@ -72,3 +72,57 @@ SELECT @result
 2025-05-26 21:01:04.353 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
 2025-05-26 21:01:04.355 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
 2025-05-26 21:01:04.356 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-26 21:20:35.833 +07:00 [INF] () Starting ChatApp API...
+2025-05-26 21:20:36.151 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-26 21:20:36.154 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-26 21:20:36.228 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-26 21:20:36.230 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-26 21:20:36.231 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-26 21:20:37.816 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /healthcheck responded 200 in 64.0891 ms
+2025-05-26 21:20:43.313 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /healthcheck responded 200 in 4.1739 ms
+2025-05-26 21:20:43.443 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /favicon.ico responded 404 in 2.4071 ms
+2025-05-26 21:20:59.306 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-26 21:20:59.334 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 203.1811 ms
+2025-05-26 21:21:05.162 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 420.9068 ms
+2025-05-26 21:21:05.188 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-26 21:21:05.191 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-26 21:21:06.418 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (105ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-26 21:21:06.451 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[@__userEmail_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__userEmail_0
+2025-05-26 21:21:06.522 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Creating new user from Google login: hoangnguyenn268@gmail.com
+2025-05-26 21:21:06.604 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 2048), @p2='?' (DbType = DateTime2), @p3='?' (Size = 256), @p4='?' (Size = 256), @p5='?' (Size = 256), @p6='?' (DbType = Boolean), @p7='?' (DbType = DateTime2), @p8='?' (Size = 50), @p9='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([Id], [AvatarUrl], [CreatedAtUtc], [DisplayName], [Email], [ExternalId], [IsActive], [LastSeenUtc], [ProviderName], [UpdatedAtUtc])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2025-05-26 21:21:06.614 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" (hoangnguyenn268@gmail.com) processed. JWT generation (TODO).
+2025-05-26 21:21:06.618 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to client: http://localhost:4200/auth-callback
+2025-05-26 21:21:06.622 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 1450.1544 ms
+2025-05-26 21:49:49.431 +07:00 [INF] () Starting ChatApp API...
+2025-05-26 21:49:49.774 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-26 21:49:49.778 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-26 21:49:49.850 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-26 21:49:49.852 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-26 21:49:49.853 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-26 21:49:56.720 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-26 21:49:56.745 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 1111.3654 ms
+2025-05-26 21:49:59.879 +07:00 [ERR] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 500 in 450.7325 ms
+System.InvalidOperationException: No authenticationScheme was specified, and there was no DefaultSignInScheme found. The default schemes can be set using either AddAuthentication(string defaultScheme) or AddAuthentication(Action<AuthenticationOptions> configureOptions).
+   at Microsoft.AspNetCore.Authentication.AuthenticationService.SignInAsync(HttpContext context, String scheme, ClaimsPrincipal principal, AuthenticationProperties properties)
+   at Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1.HandleRequestAsync()
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2025-05-26 21:49:59.992 +07:00 [ERR] (ChatApp.Api.Middleware.ErrorHandlingMiddleware) Unhandled exception occurred while processing request /signin-google
+System.InvalidOperationException: No authenticationScheme was specified, and there was no DefaultSignInScheme found. The default schemes can be set using either AddAuthentication(string defaultScheme) or AddAuthentication(Action<AuthenticationOptions> configureOptions).
+   at Microsoft.AspNetCore.Authentication.AuthenticationService.SignInAsync(HttpContext context, String scheme, ClaimsPrincipal principal, AuthenticationProperties properties)
+   at Microsoft.AspNetCore.Authentication.RemoteAuthenticationHandler`1.HandleRequestAsync()
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at ChatApp.Api.Middleware.ErrorHandlingMiddleware.InvokeAsync(HttpContext context) in D:\ChatApp\src\ChatApp.Api\Middleware\ErrorHandlingMiddleware.cs:line 31
