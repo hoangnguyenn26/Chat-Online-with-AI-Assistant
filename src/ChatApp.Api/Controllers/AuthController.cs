@@ -4,6 +4,7 @@ using ChatApp.Infrastructure.Persistence.DbContext;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -135,12 +136,51 @@ namespace ChatApp.Api.Controllers
             return Redirect($"{angularCallbackUrl}?token={Uri.EscapeDataString(appJwtToken)}&userId={user.Id}&email={Uri.EscapeDataString(user.Email)}&displayName={Uri.EscapeDataString(user.DisplayName)}&avatarUrl={Uri.EscapeDataString(user.AvatarUrl ?? "")}");
         }
 
-        // [HttpPost("logout")] 
-        // public async Task<IActionResult> Logout()
-        // {
-        //     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        //     _logger.LogInformation("User logged out.");
-        //     return Ok(new { message = "Logged out successfully" });
-        // }
+        // GET /auth/me
+        [HttpGet("me")]
+        [Authorize]
+        public IActionResult Me()
+        {
+            _logger.LogInformation("User {UserId} requesting their profile information via /auth/me.", User.FindFirstValue(ClaimTypes.NameIdentifier));
+            // Lấy các claims cần thiết từ User.Claims
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var displayName = User.FindFirstValue(ClaimTypes.Name);
+            var avatarUrl = User.FindFirstValue("avatar");
+
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))
+            {
+                _logger.LogWarning("/auth/me: User ID not found or invalid in token claims.");
+                return Unauthorized(new { message = "User identifier not found in token." });
+            }
+
+            var userProfile = new
+            {
+                Id = userId,
+                Email = email,
+                DisplayName = displayName,
+                AvatarUrl = avatarUrl,
+                Roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList()
+            };
+
+            _logger.LogInformation("Returning profile for User {UserId}", userId);
+            return Ok(userProfile);
+        }
+
+        // POST /auth/logout
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _logger.LogInformation("User {UserId} requesting logout.", userId ?? "Unknown");
+            if (User.Identity != null && User.Identity.AuthenticationType == CookieAuthenticationDefaults.AuthenticationScheme)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                _logger.LogInformation("Signed out from intermediate cookie for User {UserId}.", userId);
+            }
+            _logger.LogInformation("Logout processed for User {UserId}. Client should clear token.", userId);
+            return Ok(new { message = "Logged out successfully. Please clear your token on the client side." });
+        }
     }
 }

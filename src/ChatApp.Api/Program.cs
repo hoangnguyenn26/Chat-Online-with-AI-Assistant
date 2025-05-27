@@ -119,7 +119,7 @@ app.UseRouting();
 app.UseCors("AllowAngularDevClient");
 
 app.UseAuthentication();
-// app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 

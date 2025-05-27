@@ -126,3 +126,23 @@ System.InvalidOperationException: No authenticationScheme was specified, and the
    at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
    at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
    at ChatApp.Api.Middleware.ErrorHandlingMiddleware.InvokeAsync(HttpContext context) in D:\ChatApp\src\ChatApp.Api\Middleware\ErrorHandlingMiddleware.cs:line 31
+2025-05-26 21:56:19.458 +07:00 [INF] () Starting ChatApp API...
+2025-05-26 21:56:19.752 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-26 21:56:19.755 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-26 21:56:19.838 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-26 21:56:19.839 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-26 21:56:19.841 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-26 21:56:31.020 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-26 21:56:31.047 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 219.7396 ms
+2025-05-26 21:56:33.999 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 427.9756 ms
+2025-05-26 21:56:34.026 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-26 21:56:34.031 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-26 21:56:35.089 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (46ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-26 21:56:35.167 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-26 21:56:35.202 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-26 21:56:35.255 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-26 21:56:35.258 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-26 21:56:35.262 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 1250.4877 ms
