@@ -4,3 +4,42 @@
 2025-05-27 15:07:43.548 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
 2025-05-27 15:07:43.550 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
 2025-05-27 15:07:43.551 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-27 15:07:52.819 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-27 15:07:52.847 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 1373.4886 ms
+2025-05-27 15:07:56.258 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 471.6621 ms
+2025-05-27 15:07:56.285 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-27 15:07:56.289 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-27 15:07:58.124 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (94ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-27 15:07:58.204 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-27 15:07:58.239 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-27 15:07:58.296 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-27 15:07:58.299 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-27 15:07:58.302 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 2033.2202 ms
+2025-05-27 15:10:13.399 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-27 15:10:13.402 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-27 15:10:13.420 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 71.9993 ms
+2025-05-27 15:20:14.477 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-27 15:20:14.478 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-27 15:20:14.480 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.1361 ms
+2025-05-27 15:20:26.652 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-27 15:20:26.654 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-27 15:20:26.655 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 11.7013 ms
+2025-05-27 15:21:12.638 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/logout responded 405 in 0.4822 ms
+2025-05-27 15:21:17.836 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting logout.
+2025-05-27 15:21:17.838 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Logout processed for User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa. Client should clear token.
+2025-05-27 15:21:17.843 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 200 in 12.3425 ms
+2025-05-27 15:21:21.769 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting logout.
+2025-05-27 15:21:21.771 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Logout processed for User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa. Client should clear token.
+2025-05-27 15:21:21.774 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 200 in 4.9448 ms
+2025-05-27 15:21:22.757 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting logout.
+2025-05-27 15:21:22.758 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Logout processed for User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa. Client should clear token.
+2025-05-27 15:21:22.760 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 200 in 3.8666 ms
+2025-05-27 15:21:23.553 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting logout.
+2025-05-27 15:21:23.555 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Logout processed for User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa. Client should clear token.
+2025-05-27 15:21:23.559 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 200 in 6.2864 ms
+2025-05-27 15:21:25.191 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting logout.
+2025-05-27 15:21:25.193 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Logout processed for User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa. Client should clear token.
+2025-05-27 15:21:25.196 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 200 in 5.1135 ms
