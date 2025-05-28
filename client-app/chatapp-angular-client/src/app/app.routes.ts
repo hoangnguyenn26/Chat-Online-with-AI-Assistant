@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const appRoutes: Routes = [
   {
@@ -11,7 +12,7 @@ export const appRoutes: Routes = [
   },
   {
     path: 'chat',
-    // canActivate: [AuthGuard], // Sẽ thêm Guard sau
+    canActivate: [authGuard],
     loadComponent: () => import('./features/chat/chat-window/chat-window.component').then(m => m.ChatWindowComponent) // Hoặc một ShellComponent
   },
   {

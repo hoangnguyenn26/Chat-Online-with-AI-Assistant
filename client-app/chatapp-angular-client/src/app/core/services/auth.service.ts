@@ -1,4 +1,3 @@
-// src/app/core/services/auth.service.ts
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -12,7 +11,9 @@ import { UserDto, LoginResponseDto } from '../models/auth.dtos';
 export class AuthService {
   private readonly API_BASE_URL = environment.apiBaseUrl; // Ví dụ: http://localhost:7001/api
   private router = inject(Router);
-  private http = inject(HttpClient); // Sẽ dùng sau
+  private http = inject(HttpClient);
+
+  private _authToken: string | null = null;
 
   // BehaviorSubject để quản lý trạng thái đăng nhập và thông tin user
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
@@ -46,12 +47,36 @@ export class AuthService {
   private async checkInitialLoginState(): Promise<void> {
     const token = localStorage.getItem('app_auth_token');
     if (token) {
-        this.isLoggedInSubject.next(true);
-        this.currentUserSubject.next(this.getUserFromStorage());
+      this._authToken = token;
+      console.log('AuthService: Token found in storage. Verifying with /auth/me...');
+      try {
+        const userProfile = await this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`).toPromise();
+        if (userProfile) {
+          localStorage.setItem('app_current_user', JSON.stringify(userProfile));
+          this.currentUserSubject.next(userProfile);
+          this.isLoggedInSubject.next(true);
+          console.log('AuthService: Session restored for user:', userProfile.userName);
+        } else {
+          console.warn('AuthService: Token verification failed or no user profile from /auth/me.');
+          await this.logout();
+        }
+      } catch (error: any) {
+        console.error('AuthService: Error verifying token with /auth/me.', error);
+        if (error?.status === 401 || error?.name === 'HttpErrorResponse') {
+             await this.logout();
+        } else {
+          console.error('AuthService: Unexpected error during token verification:', error);
+        }
+      }
     } else {
-        this.isLoggedInSubject.next(false);
-        this.currentUserSubject.next(null);
+      this.isLoggedInSubject.next(false);
+      this.currentUserSubject.next(null);
+      console.log('AuthService: No token found in storage.');
     }
+  }
+
+  public getCurrentToken(): string | null {
+      return this._authToken || localStorage.getItem('app_auth_token');
   }
 
 
@@ -68,26 +93,28 @@ export class AuthService {
     console.log('AuthService: Handling auth callback with token:', token ? 'Token Received' : 'No Token');
     if (token) {
       localStorage.setItem('app_auth_token', token);
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        // Đảm bảo các claim tồn tại trước khi truy cập
-        const user: UserDto = {
-          id: payload.uid || payload.sub || '', // Lấy UserID từ 'uid' hoặc 'sub'
-          userName: payload.nameid || payload.name || (payload.email ? payload.email.split('@')[0] : 'User'),
-          email: payload.email || '',
-          displayName: payload.name || (payload.given_name && payload.family_name ? `${payload.given_name} ${payload.family_name}`: (payload.email ? payload.email.split('@')[0] : 'User')),
-          avatarUrl: payload.avatar || payload.picture || undefined, // 'picture' là claim chuẩn từ Google
-          roles: this.parseRoles(payload.role) // Hàm helper parse roles
-        };
+      this._authToken = token; // Cập nhật token nội bộ
 
-        localStorage.setItem('app_current_user', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        this.isLoggedInSubject.next(true);
-        console.log('AuthService: User processed from token payload. Navigating to chat.');
-        this.router.navigate(['/chat']); // Điều hướng đến trang chính sau khi login
-      } catch (e) {
-        console.error('AuthService: Error decoding token or setting user during callback', e);
-        await this.logoutAndRedirectToLogin('Error processing user information from token.');
+      // **GỌI API /auth/me ĐỂ LẤY THÔNG TIN USER**
+      try {
+        console.log('AuthService: Calling /auth/me to fetch user profile...');
+        // HttpClient đã được cấu hình để AuthInterceptor (sẽ tạo) tự thêm token
+        const userProfile = await this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`).toPromise();
+
+        if (userProfile) {
+          localStorage.setItem('app_current_user', JSON.stringify(userProfile));
+          this.currentUserSubject.next(userProfile);
+          this.isLoggedInSubject.next(true);
+          console.log('AuthService: User profile fetched and session established. Navigating to chat.');
+          this.router.navigate(['/chat']); // Điều hướng đến trang chính
+        } else {
+          // Trường hợp API /auth/me trả về lỗi hoặc không có user (dù có token)
+          console.error('AuthService: /auth/me did not return a user profile.');
+          await this.logoutAndRedirectToLogin('Failed to retrieve user profile after login.');
+        }
+      } catch (error) {
+        console.error('AuthService: Error calling /auth/me or processing user profile', error);
+        await this.logoutAndRedirectToLogin('Error verifying session. Please login again.');
       }
     } else {
       console.error('AuthService: Auth callback received no token.');
