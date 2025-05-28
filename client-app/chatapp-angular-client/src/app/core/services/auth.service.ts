@@ -4,14 +4,17 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http'; 
 import { environment } from '../../../environments/environment'; 
 import { UserDto, LoginResponseDto } from '../models/auth.dtos';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_BASE_URL = environment.apiBaseUrl; // Ví dụ: http://localhost:7001/api
+  private readonly API_BASE_URL = environment.apiBaseUrl;
   private router = inject(Router);
   private http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
 
   private _authToken: string | null = null;
 
@@ -26,18 +29,38 @@ export class AuthService {
     this.checkInitialLoginState();
   }
 
+  private isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
+
+  private getLocalStorageItem(key: string): string | null {
+    return this.isBrowser() ? localStorage.getItem(key) : null;
+  }
+
+  private setLocalStorageItem(key: string, value: string): void {
+    if (this.isBrowser()) {
+      localStorage.setItem(key, value);
+    }
+  }
+
+  private removeLocalStorageItem(key: string): void {
+    if (this.isBrowser()) {
+      localStorage.removeItem(key);
+    }
+  }
+
   private hasToken(): boolean {
-    return !!localStorage.getItem('app_auth_token');
+    return !!this.getLocalStorageItem('app_auth_token');
   }
 
   private getUserFromStorage(): UserDto | null {
-    const userJson = localStorage.getItem('app_current_user');
+    const userJson = this.getLocalStorageItem('app_current_user');
     if (userJson) {
       try {
         return JSON.parse(userJson) as UserDto;
       } catch (e) {
         console.error('Error parsing user from localStorage', e);
-        localStorage.removeItem('app_current_user'); // Xóa nếu lỗi
+        this.removeLocalStorageItem('app_current_user'); // Xóa nếu lỗi
         return null;
       }
     }
@@ -45,14 +68,14 @@ export class AuthService {
   }
 
   private async checkInitialLoginState(): Promise<void> {
-    const token = localStorage.getItem('app_auth_token');
+    const token = this.getLocalStorageItem('app_auth_token');
     if (token) {
       this._authToken = token;
       console.log('AuthService: Token found in storage. Verifying with /auth/me...');
       try {
         const userProfile = await this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`).toPromise();
         if (userProfile) {
-          localStorage.setItem('app_current_user', JSON.stringify(userProfile));
+          this.setLocalStorageItem('app_current_user', JSON.stringify(userProfile));
           this.currentUserSubject.next(userProfile);
           this.isLoggedInSubject.next(true);
           console.log('AuthService: Session restored for user:', userProfile.userName);
@@ -76,9 +99,8 @@ export class AuthService {
   }
 
   public getCurrentToken(): string | null {
-      return this._authToken || localStorage.getItem('app_auth_token');
+    return this._authToken || this.getLocalStorageItem('app_auth_token');
   }
-
 
   loginWithGoogle(): void {
     const currentAppUrl = window.location.origin; // Ví dụ: http://localhost:4200
@@ -92,7 +114,7 @@ export class AuthService {
   async handleAuthCallback(token: string): Promise<void> {
     console.log('AuthService: Handling auth callback with token:', token ? 'Token Received' : 'No Token');
     if (token) {
-      localStorage.setItem('app_auth_token', token);
+      this.setLocalStorageItem('app_auth_token', token);
       this._authToken = token; // Cập nhật token nội bộ
 
       // **GỌI API /auth/me ĐỂ LẤY THÔNG TIN USER**
@@ -102,7 +124,7 @@ export class AuthService {
         const userProfile = await this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`).toPromise();
 
         if (userProfile) {
-          localStorage.setItem('app_current_user', JSON.stringify(userProfile));
+          this.setLocalStorageItem('app_current_user', JSON.stringify(userProfile));
           this.currentUserSubject.next(userProfile);
           this.isLoggedInSubject.next(true);
           console.log('AuthService: User profile fetched and session established. Navigating to chat.');
@@ -136,24 +158,24 @@ export class AuthService {
   }
 
   private async logoutAndRedirectToLogin(errorMessage?: string): Promise<void> {
-      localStorage.removeItem('app_auth_token');
-      localStorage.removeItem('app_current_user');
-      this.isLoggedInSubject.next(false);
-      this.currentUserSubject.next(null);
-      const queryParams = errorMessage ? { error: encodeURIComponent(errorMessage) } : {};
-      this.router.navigate(['/login'], { queryParams });
+    this.removeLocalStorageItem('app_auth_token');
+    this.removeLocalStorageItem('app_current_user');
+    this.isLoggedInSubject.next(false);
+    this.currentUserSubject.next(null);
+    const queryParams = errorMessage ? { error: encodeURIComponent(errorMessage) } : {};
+    this.router.navigate(['/login'], { queryParams });
   }
 
   async logout(): Promise<void> {
     console.log('Logging out...');
-    localStorage.removeItem('app_auth_token');
-    localStorage.removeItem('app_current_user');
+    this.removeLocalStorageItem('app_auth_token');
+    this.removeLocalStorageItem('app_current_user');
     this.isLoggedInSubject.next(false);
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
 
   public getAuthToken(): string | null {
-    return localStorage.getItem('app_auth_token');
+    return this.getLocalStorageItem('app_auth_token');
   }
 }

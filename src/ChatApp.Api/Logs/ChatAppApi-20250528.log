@@ -4,3 +4,50 @@
 2025-05-28 14:50:56.064 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
 2025-05-28 14:50:56.066 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
 2025-05-28 14:50:56.068 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-28 17:31:52.001 +07:00 [INF] () Starting ChatApp API...
+2025-05-28 17:31:52.303 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-28 17:31:52.307 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-28 17:31:52.387 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-28 17:31:52.389 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-28 17:31:52.390 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-28 17:32:02.106 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 17:32:02.133 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 220.8905 ms
+2025-05-28 17:32:05.132 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 456.6106 ms
+2025-05-28 17:32:05.155 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 17:32:05.160 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 17:32:06.203 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (43ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 17:32:06.287 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 17:32:06.324 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 17:32:06.351 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 17:32:06.354 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 17:32:06.359 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 1217.7765 ms
+2025-05-28 17:32:06.673 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 19.6737 ms
+2025-05-28 17:32:21.527 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 17:32:21.530 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 7.6837 ms
+2025-05-28 17:32:24.051 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 123.0959 ms
+2025-05-28 17:32:24.060 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 17:32:24.062 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 17:32:24.078 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 17:32:24.084 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 17:32:24.085 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 17:32:24.087 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 17:32:24.088 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 17:32:24.091 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 31.6494 ms
+2025-05-28 17:32:24.329 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 1.2879 ms
+2025-05-28 18:58:46.270 +07:00 [INF] () Starting ChatApp API...
+2025-05-28 18:58:46.633 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-28 18:58:46.636 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-28 18:58:46.744 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-28 18:58:46.749 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-28 18:58:46.751 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-28 19:04:31.060 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 990.6887 ms
+2025-05-28 19:04:49.567 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 3.2410 ms
+2025-05-28 19:11:36.782 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 96.4032 ms
+2025-05-28 19:11:45.079 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 401 in 1.5585 ms
+2025-05-28 19:11:52.049 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 0.9735 ms
