@@ -1,10 +1,10 @@
-import { Injectable, inject } from '@angular/core';
+// src/app/core/services/auth.service.ts
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http'; 
-import { environment } from '../../../environments/environment'; 
-import { UserDto, LoginResponseDto } from '../models/auth.dtos';
-import { PLATFORM_ID } from '@angular/core';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs'; // Thêm firstValueFrom
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { UserDto, LoginResponseDto } from '../models/auth.dtos'; // Đảm bảo đường dẫn đúng
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -14,10 +14,10 @@ export class AuthService {
   private readonly API_BASE_URL = environment.apiBaseUrl;
   private router = inject(Router);
   private http = inject(HttpClient);
-  private platformId = inject(PLATFORM_ID);
+  private platformId = inject(PLATFORM_ID); // Inject PLATFORM_ID
 
   private _authToken: string | null = null;
-  private _initialized = false;
+  private _initialized = false; // Cờ để đảm bảo init chỉ chạy một lần
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$: Observable<boolean> = this.isLoggedInSubject.asObservable();
@@ -25,18 +25,26 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<UserDto | null>(null);
   public currentUser$: Observable<UserDto | null> = this.currentUserSubject.asObservable();
 
+  private readonly TOKEN_KEY = 'app_auth_token';
+  private readonly USER_KEY = 'app_current_user';
+
   constructor() {
     console.log('🔧 AuthService constructor called');
+    // Không gọi init tự động ở đây, để app.component hoặc APP_INITIALIZER gọi
   }
 
-  // Explicit initialization method
   public async init(): Promise<void> {
     if (this._initialized || !this.isBrowser()) {
-      console.log('ℹ️ AuthService: Already initialized or not in browser, skipping init.');
+      console.log(`ℹ️ AuthService: ${this._initialized ? 'Already initialized' : 'Not in browser'}, skipping init.`);
+      // Nếu đã init và có token, vẫn phát ra giá trị hiện tại để các subscriber mới nhận được
+      if (this._initialized && this.isBrowser()) {
+         this.isLoggedInSubject.next(!!this._authToken);
+         this.currentUserSubject.next(this.currentUserSubject.value);
+      }
       return;
     }
     this._initialized = true;
-    console.log('🚀 AuthService initializing...');
+    console.log('🚀 AuthService initializing application state...');
     await this.initializeAuthState();
   }
 
@@ -45,7 +53,10 @@ export class AuthService {
   }
 
   private getLocalStorageItem(key: string): string | null {
-    return this.isBrowser() ? localStorage.getItem(key) : null;
+    if (this.isBrowser()) {
+      return localStorage.getItem(key);
+    }
+    return null;
   }
 
   private setLocalStorageItem(key: string, value: string): void {
@@ -60,119 +71,109 @@ export class AuthService {
     }
   }
 
-  private hasToken(): boolean {
-    return !!this.getLocalStorageItem('app_auth_token');
-  }
-
-  private getUserFromStorage(): UserDto | null {
-    const userJson = this.getLocalStorageItem('app_current_user');
-    if (userJson) {
-      try {
-        return JSON.parse(userJson) as UserDto;
-      } catch (e) {
-        console.error('Error parsing user from localStorage', e);
-        this.removeLocalStorageItem('app_current_user');
-        return null;
-      }
-    }
-    return null;
-  }
-
   private async initializeAuthState(): Promise<void> {
-    console.log('🔍 Initializing auth state...');
-    
-    const token = this.getLocalStorageItem('app_auth_token');
-    const savedUser = this.getUserFromStorage();
-    
+    console.log('🔍 AuthService: Initializing auth state from storage...');
+    const token = this.getLocalStorageItem(this.TOKEN_KEY);
+
     if (token) {
       this._authToken = token;
       console.log('ℹ️ AuthService: Token found in storage. Verifying with /auth/me...');
-      
       try {
-        const userProfile = await this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`).toPromise();
+        // Sử dụng firstValueFrom để chuyển Observable thành Promise một cách an toàn hơn toPromise() (deprecated)
+        const userProfile = await firstValueFrom(this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`));
+
         if (userProfile) {
-          this.setLocalStorageItem('app_current_user', JSON.stringify(userProfile));
+          this.setLocalStorageItem(this.USER_KEY, JSON.stringify(userProfile));
           this.currentUserSubject.next(userProfile);
           this.isLoggedInSubject.next(true);
-          console.log('✅ AuthService: Session restored for user:', userProfile.userName);
+          console.log('✅ AuthService: Session restored and verified for user:', userProfile.userName);
         } else {
-          console.warn('⚠️ AuthService: Token verification failed or no user profile from /auth/me.');
-          await this.clearAuthState();
+          console.warn('⚠️ AuthService: Token verification via /auth/me did not return a user profile. Clearing state.');
+          await this.clearAuthStateAndStorage();
         }
       } catch (error: any) {
-        console.error('❌ AuthService: Error verifying token with /auth/me.', error);
-        await this.clearAuthState();
-        // Avoid navigation here to prevent loops
+        console.error('❌ AuthService: Error verifying token with /auth/me. Clearing state.', error instanceof HttpErrorResponse ? error.message : error);
+        await this.clearAuthStateAndStorage();
+        // Không điều hướng từ đây, để guard hoặc component xử lý
       }
     } else {
-      console.log('ℹ️ AuthService: No token found in storage.');
-      await this.clearAuthState();
+      console.log('ℹ️ AuthService: No token found in storage. Ensuring clean state.');
+      await this.clearAuthStateAndStorage(false); // Không cần xóa storage vì đã không có gì
     }
   }
 
-  private async clearAuthState(): Promise<void> {
-    this.removeLocalStorageItem('app_auth_token');
-    this.removeLocalStorageItem('app_current_user');
+  private async clearAuthStateAndStorage(removeFromStorage: boolean = true): Promise<void> {
+    if (removeFromStorage && this.isBrowser()) {
+      this.removeLocalStorageItem(this.TOKEN_KEY);
+      this.removeLocalStorageItem(this.USER_KEY);
+    }
     this._authToken = null;
-    this.isLoggedInSubject.next(false);
     this.currentUserSubject.next(null);
+    this.isLoggedInSubject.next(false); // Quan trọng: Phát ra trạng thái đã logout
+    console.log('🔒 AuthService: Auth state cleared.');
   }
 
   public getCurrentToken(): string | null {
-    return this._authToken || this.getLocalStorageItem('app_auth_token');
+    // Ưu tiên token trong bộ nhớ, sau đó mới đến localStorage
+    return this._authToken || this.getLocalStorageItem(this.TOKEN_KEY);
   }
 
   loginWithGoogle(): void {
+    if (!this.isBrowser()) return;
     const apiLoginGoogleUrl = `${this.API_BASE_URL}/auth/login-google`;
-    console.log(`🔄 Redirecting to Google login via API: ${apiLoginGoogleUrl}`);
+    console.log(`🔄 AuthService: Redirecting to Google login via API: ${apiLoginGoogleUrl}`);
     window.location.href = apiLoginGoogleUrl;
   }
 
   async handleAuthCallback(token: string): Promise<void> {
     console.log('🔄 AuthService: Handling auth callback with token:', token ? 'Token Received' : 'No Token');
-    
+    if (!this.isBrowser()) return;
+
     if (!token) {
       console.error('❌ AuthService: Auth callback received no token.');
       await this.logoutAndRedirectToLogin('Authentication failed: No token received from server.');
       return;
     }
 
-    this.setLocalStorageItem('app_auth_token', token);
+    this.setLocalStorageItem(this.TOKEN_KEY, token);
     this._authToken = token;
 
     try {
-      console.log('🔄 AuthService: Calling /auth/me to fetch user profile...');
-      const userProfile = await this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`).toPromise();
+      console.log('🔄 AuthService: Calling /auth/me to fetch user profile after callback...');
+      const userProfile = await firstValueFrom(this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`));
 
       if (userProfile) {
-        this.setLocalStorageItem('app_current_user', JSON.stringify(userProfile));
+        this.setLocalStorageItem(this.USER_KEY, JSON.stringify(userProfile));
         this.currentUserSubject.next(userProfile);
-        this.isLoggedInSubject.next(true);
-        console.log('✅ AuthService: User profile fetched and session established. Navigating to chat.');
-        await this.router.navigate(['/chat']);
+        this.isLoggedInSubject.next(true); // Phát ra trạng thái đã login
+        console.log('✅ AuthService: User profile fetched and session established via callback. Navigating to chat.');
+        await this.router.navigate(['/chat']); // Hoặc trang đích sau khi login
       } else {
-        console.error('❌ AuthService: /auth/me did not return a user profile.');
-        await this.logoutAndRedirectToLogin('Failed to retrieve user profile after login.');
+        console.error('❌ AuthService: /auth/me did not return a user profile after callback.');
+        await this.logoutAndRedirectToLogin('Failed to retrieve user profile after successful authentication.');
       }
     } catch (error) {
-      console.error('❌ AuthService: Error calling /auth/me or processing user profile', error);
-      await this.logoutAndRedirectToLogin('Error verifying session. Please login again.');
+      console.error('❌ AuthService: Error calling /auth/me or processing user profile during callback', error);
+      await this.logoutAndRedirectToLogin('Error verifying your session after authentication. Please try again.');
     }
   }
 
   private async logoutAndRedirectToLogin(errorMessage?: string): Promise<void> {
-    await this.clearAuthState();
+    await this.clearAuthStateAndStorage();
+    console.log(`↪️ AuthService: Redirecting to login. Error: ${errorMessage || 'N/A'}`);
     const queryParams = errorMessage ? { error: encodeURIComponent(errorMessage) } : {};
-    await this.router.navigate(['/login'], { queryParams });
+    // Đảm bảo điều hướng chỉ xảy ra ở browser
+    if (this.isBrowser()) {
+        await this.router.navigate(['/login'], { queryParams });
+    }
   }
 
   async logout(): Promise<void> {
-    console.log('🔄 Logging out...');
-    await this.clearAuthState();
-    await this.router.navigate(['/login']);
-  }
-
-  public getAuthToken(): string | null {
-    return this.getLocalStorageItem('app_auth_token');
+    console.log(`🔄 AuthService: Logging out user ${this.currentUserSubject.value?.userName || '(unknown)'}...`);
+    await firstValueFrom(this.http.post(`${this.API_BASE_URL}/auth/logout`, {})).catch(err => console.error("Error calling server logout", err));
+    await this.clearAuthStateAndStorage();
+    if (this.isBrowser()) {
+        await this.router.navigate(['/login']);
+    }
   }
 }

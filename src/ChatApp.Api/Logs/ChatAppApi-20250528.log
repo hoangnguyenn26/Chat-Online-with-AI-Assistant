@@ -57,3 +57,292 @@ WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
 2025-05-28 19:14:57.829 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
 2025-05-28 19:14:57.830 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
 2025-05-28 19:14:57.831 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-28 22:13:47.755 +07:00 [INF] () Starting ChatApp API...
+2025-05-28 22:13:48.273 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-28 22:13:48.284 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-28 22:13:48.415 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-28 22:13:48.418 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-28 22:13:48.419 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-05-28 22:13:58.579 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 22:13:58.618 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 1696.9368 ms
+2025-05-28 22:14:01.627 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 449.9638 ms
+2025-05-28 22:14:01.664 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 22:14:01.670 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 22:14:03.796 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (116ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 22:14:03.887 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 22:14:03.924 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:14:03.985 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:14:03.988 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 22:14:03.992 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 2346.4060 ms
+2025-05-28 22:14:45.724 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:14:45.727 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:14:45.751 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 90.5259 ms
+2025-05-28 22:14:57.003 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting logout.
+2025-05-28 22:14:57.005 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Logout processed for User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa. Client should clear token.
+2025-05-28 22:14:57.009 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 200 in 14.4441 ms
+2025-05-28 22:15:00.029 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:15:00.031 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:15:00.032 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.5818 ms
+2025-05-28 22:18:54.781 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET / responded 404 in 0.2513 ms
+2025-05-28 22:28:40.667 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:28:40.669 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:28:40.671 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.1340 ms
+2025-05-28 22:31:47.050 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 22:31:47.053 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 3.8465 ms
+2025-05-28 22:31:50.034 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 333.1723 ms
+2025-05-28 22:31:50.043 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 22:31:50.046 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 22:31:50.163 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (8ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 22:31:50.166 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 22:31:50.168 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:31:50.170 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:31:50.172 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 22:31:50.173 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 130.0185 ms
+2025-05-28 22:31:50.596 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 1.8245 ms
+2025-05-28 22:31:50.603 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:31:50.604 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:31:50.607 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.2844 ms
+2025-05-28 22:31:52.571 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:31:52.572 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:31:52.574 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.6193 ms
+2025-05-28 22:32:16.735 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 22:32:16.737 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 2.2484 ms
+2025-05-28 22:32:20.026 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 94.5877 ms
+2025-05-28 22:32:20.035 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 22:32:20.036 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 22:32:20.092 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 22:32:20.097 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 22:32:20.098 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:32:20.099 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:32:20.101 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 22:32:20.102 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 67.7761 ms
+2025-05-28 22:32:20.367 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.1378 ms
+2025-05-28 22:32:20.371 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:32:20.372 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:32:20.373 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 2.9753 ms
+2025-05-28 22:32:20.435 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:32:20.438 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:32:20.440 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 6.0696 ms
+2025-05-28 22:32:27.996 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.2272 ms
+2025-05-28 22:32:28.012 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:32:28.017 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:32:28.020 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 9.3175 ms
+2025-05-28 22:38:47.936 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:38:47.940 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:38:47.942 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 6.5761 ms
+2025-05-28 22:42:59.112 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.2505 ms
+2025-05-28 22:42:59.128 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:42:59.133 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:42:59.135 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 7.9214 ms
+2025-05-28 22:43:01.756 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 22:43:01.757 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 1.8987 ms
+2025-05-28 22:43:04.633 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 441.9149 ms
+2025-05-28 22:43:04.643 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 22:43:04.644 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 22:43:04.705 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (9ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 22:43:04.708 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 22:43:04.709 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:43:04.710 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:43:04.711 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 22:43:04.712 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 69.7345 ms
+2025-05-28 22:43:04.986 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.2721 ms
+2025-05-28 22:43:04.990 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:43:04.991 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:43:04.993 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.4728 ms
+2025-05-28 22:43:05.075 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:43:05.078 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:43:05.079 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 4.5810 ms
+2025-05-28 22:43:51.142 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.3193 ms
+2025-05-28 22:43:51.152 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:43:51.154 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:43:51.156 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 4.0045 ms
+2025-05-28 22:44:24.174 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0729 ms
+2025-05-28 22:44:24.178 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:44:24.179 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:44:24.184 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.9213 ms
+2025-05-28 22:44:53.451 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 22:44:53.454 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 3.2681 ms
+2025-05-28 22:44:56.312 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 317.3014 ms
+2025-05-28 22:44:56.324 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 22:44:56.326 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 22:44:56.334 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (3ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 22:44:56.344 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 22:44:56.348 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:44:56.354 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:44:56.358 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 22:44:56.361 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 36.2985 ms
+2025-05-28 22:44:56.683 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0609 ms
+2025-05-28 22:44:56.687 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:44:56.690 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:44:56.692 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 4.6938 ms
+2025-05-28 22:44:56.762 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:44:56.764 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:44:56.766 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 4.5254 ms
+2025-05-28 22:51:56.458 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0829 ms
+2025-05-28 22:51:56.466 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:51:56.468 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:51:56.469 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.5350 ms
+2025-05-28 22:51:57.545 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 22:51:57.547 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 2.3329 ms
+2025-05-28 22:52:00.194 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 309.5071 ms
+2025-05-28 22:52:00.203 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 22:52:00.204 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 22:52:00.254 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (9ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 22:52:00.258 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 22:52:00.259 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:52:00.260 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:52:00.262 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 22:52:00.263 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 60.0731 ms
+2025-05-28 22:52:00.557 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:52:00.559 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:52:00.562 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.9436 ms
+2025-05-28 22:52:00.631 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:52:00.633 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:52:00.635 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 4.0487 ms
+2025-05-28 22:55:03.992 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 22:55:03.994 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 22:55:03.995 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.6876 ms
+2025-05-28 23:15:26.902 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0894 ms
+2025-05-28 23:15:26.913 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:15:26.914 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:15:26.915 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.0202 ms
+2025-05-28 23:15:34.021 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 23:15:34.023 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 2.3375 ms
+2025-05-28 23:15:36.700 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 340.5991 ms
+2025-05-28 23:15:36.707 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 23:15:36.709 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 23:15:36.755 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (8ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 23:15:36.759 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 23:15:36.760 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:15:36.761 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:15:36.763 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 23:15:36.764 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 56.5773 ms
+2025-05-28 23:15:36.989 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.1421 ms
+2025-05-28 23:15:36.992 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:15:36.993 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:15:36.994 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 2.4441 ms
+2025-05-28 23:15:37.047 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:15:37.048 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:15:37.050 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.3086 ms
+2025-05-28 23:15:46.238 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0456 ms
+2025-05-28 23:15:46.247 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:15:46.251 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:15:46.253 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 7.8595 ms
+2025-05-28 23:16:23.723 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0596 ms
+2025-05-28 23:16:23.731 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:16:23.732 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:16:23.734 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.2644 ms
+2025-05-28 23:20:13.566 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.1569 ms
+2025-05-28 23:20:13.598 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:20:13.600 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:20:13.606 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 7.7002 ms
+2025-05-28 23:20:25.906 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.1477 ms
+2025-05-28 23:20:25.912 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:20:25.914 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:20:25.917 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.3326 ms
+2025-05-28 23:22:23.374 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.1615 ms
+2025-05-28 23:22:23.382 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:22:23.384 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:22:23.386 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 4.0012 ms
+2025-05-28 23:27:05.576 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0516 ms
+2025-05-28 23:27:05.587 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:27:05.589 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:27:05.593 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 6.3924 ms
+2025-05-28 23:27:07.555 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 23:27:07.558 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 2.5707 ms
+2025-05-28 23:27:10.317 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 278.1761 ms
+2025-05-28 23:27:10.326 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 23:27:10.327 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 23:27:10.380 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (8ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 23:27:10.384 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 23:27:10.386 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:27:10.387 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:27:10.388 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 23:27:10.390 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 64.3790 ms
+2025-05-28 23:27:10.615 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0471 ms
+2025-05-28 23:27:10.619 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:27:10.621 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:27:10.622 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.4829 ms
+2025-05-28 23:27:10.678 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:27:10.680 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:27:10.682 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.2727 ms
+2025-05-28 23:27:38.194 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:27:38.195 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:27:38.197 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.8217 ms
+2025-05-28 23:27:48.425 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:27:48.426 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:27:48.428 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.8935 ms
+2025-05-28 23:47:17.634 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.1339 ms
+2025-05-28 23:47:17.645 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:17.646 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:17.647 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 2.9271 ms
+2025-05-28 23:47:19.010 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Client return URL: http://localhost:4200/auth-callback
+2025-05-28 23:47:19.012 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 2.3012 ms
+2025-05-28 23:47:21.882 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 368.3676 ms
+2025-05-28 23:47:21.891 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Processing Google login response after external cookie authentication.
+2025-05-28 23:47:21.894 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User claims extracted: Email=hoangnguyenn268@gmail.com, GoogleId=110932885050862021885, Name=Nguyên Hoàng
+2025-05-28 23:47:21.942 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (8ms) [Parameters=[@__googleUserId_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
+2025-05-28 23:47:21.946 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Existing Google user found: hoangnguyenn268@gmail.com. Info updated: false
+2025-05-28 23:47:21.947 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Creating token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:21.949 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Token created successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:21.950 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to Angular client with token: http://localhost:4200/auth-callback
+2025-05-28 23:47:21.952 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/process-google-response responded 302 in 61.3207 ms
+2025-05-28 23:47:22.148 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:22.150 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:22.151 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.8616 ms
+2025-05-28 23:47:22.358 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:22.359 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:22.361 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.5467 ms
+2025-05-28 23:47:29.573 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0389 ms
+2025-05-28 23:47:29.579 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:29.581 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:29.584 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.6253 ms
+2025-05-28 23:47:31.244 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:31.247 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:31.249 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 5.2385 ms
+2025-05-28 23:47:32.494 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:32.496 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:32.499 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 4.9556 ms
+2025-05-28 23:47:33.131 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:33.133 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:33.134 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.4326 ms
+2025-05-28 23:47:33.574 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:33.576 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:33.578 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.8427 ms
+2025-05-28 23:47:34.099 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:34.101 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:34.103 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 6.6502 ms
+2025-05-28 23:47:34.774 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.0414 ms
+2025-05-28 23:47:34.782 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:34.784 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:34.786 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.9129 ms
+2025-05-28 23:47:35.722 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User 21c33099-ee6b-4e62-83a8-f7c51c0be4fa requesting their profile information via /auth/me.
+2025-05-28 23:47:35.723 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Returning profile for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-05-28 23:47:35.725 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 3.8532 ms
