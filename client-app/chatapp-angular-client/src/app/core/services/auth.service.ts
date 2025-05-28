@@ -17,28 +17,27 @@ export class AuthService {
   private platformId = inject(PLATFORM_ID);
 
   private _authToken: string | null = null;
-  private _initialized = false; // Thêm flag để tránh khởi tạo nhiều lần
+  private _initialized = false;
 
-  // BehaviorSubject để quản lý trạng thái đăng nhập và thông tin user
-  private isLoggedInSubject = new BehaviorSubject<boolean>(false); // Khởi tạo với false trước
+  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$: Observable<boolean> = this.isLoggedInSubject.asObservable();
 
-  private currentUserSubject = new BehaviorSubject<UserDto | null>(null); // Khởi tạo với null trước
+  private currentUserSubject = new BehaviorSubject<UserDto | null>(null);
   public currentUser$: Observable<UserDto | null> = this.currentUserSubject.asObservable();
 
   constructor() {
     console.log('🔧 AuthService constructor called');
-    
-    // Chỉ khởi tạo một lần và chỉ ở browser
-    if (!this._initialized && this.isBrowser()) {
-      this._initialized = true;
-      console.log('🚀 AuthService initializing...');
-      
-      // Sử dụng setTimeout để tránh blocking constructor
-      setTimeout(() => {
-        this.initializeAuthState();
-      }, 0);
+  }
+
+  // Explicit initialization method
+  public async init(): Promise<void> {
+    if (this._initialized || !this.isBrowser()) {
+      console.log('ℹ️ AuthService: Already initialized or not in browser, skipping init.');
+      return;
     }
+    this._initialized = true;
+    console.log('🚀 AuthService initializing...');
+    await this.initializeAuthState();
   }
 
   private isBrowser(): boolean {
@@ -79,7 +78,6 @@ export class AuthService {
     return null;
   }
 
-  // Tách riêng logic khởi tạo ra khỏi constructor
   private async initializeAuthState(): Promise<void> {
     console.log('🔍 Initializing auth state...');
     
@@ -103,19 +101,8 @@ export class AuthService {
         }
       } catch (error: any) {
         console.error('❌ AuthService: Error verifying token with /auth/me.', error);
-        if (error?.status === 401 || error?.name === 'HttpErrorResponse') {
-          await this.clearAuthState();
-        } else {
-          console.error('❌ AuthService: Unexpected error during token verification:', error);
-          // Trong trường hợp lỗi network, vẫn sử dụng user đã lưu nếu có
-          if (savedUser) {
-            this.currentUserSubject.next(savedUser);
-            this.isLoggedInSubject.next(true);
-            console.log('ℹ️ AuthService: Using cached user due to network error');
-          } else {
-            await this.clearAuthState();
-          }
-        }
+        await this.clearAuthState();
+        // Avoid navigation here to prevent loops
       }
     } else {
       console.log('ℹ️ AuthService: No token found in storage.');
@@ -123,7 +110,6 @@ export class AuthService {
     }
   }
 
-  // Helper method để clear auth state
   private async clearAuthState(): Promise<void> {
     this.removeLocalStorageItem('app_auth_token');
     this.removeLocalStorageItem('app_current_user');
@@ -142,7 +128,6 @@ export class AuthService {
     window.location.href = apiLoginGoogleUrl;
   }
 
-  // Sẽ được gọi từ AuthCallbackComponent
   async handleAuthCallback(token: string): Promise<void> {
     console.log('🔄 AuthService: Handling auth callback with token:', token ? 'Token Received' : 'No Token');
     
@@ -164,7 +149,7 @@ export class AuthService {
         this.currentUserSubject.next(userProfile);
         this.isLoggedInSubject.next(true);
         console.log('✅ AuthService: User profile fetched and session established. Navigating to chat.');
-        this.router.navigate(['/chat']);
+        await this.router.navigate(['/chat']);
       } else {
         console.error('❌ AuthService: /auth/me did not return a user profile.');
         await this.logoutAndRedirectToLogin('Failed to retrieve user profile after login.');
@@ -178,13 +163,13 @@ export class AuthService {
   private async logoutAndRedirectToLogin(errorMessage?: string): Promise<void> {
     await this.clearAuthState();
     const queryParams = errorMessage ? { error: encodeURIComponent(errorMessage) } : {};
-    this.router.navigate(['/login'], { queryParams });
+    await this.router.navigate(['/login'], { queryParams });
   }
 
   async logout(): Promise<void> {
     console.log('🔄 Logging out...');
     await this.clearAuthState();
-    this.router.navigate(['/login']);
+    await this.router.navigate(['/login']);
   }
 
   public getAuthToken(): string | null {

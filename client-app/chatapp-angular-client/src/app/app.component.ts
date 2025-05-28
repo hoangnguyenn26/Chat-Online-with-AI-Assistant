@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationStart } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,10 +13,18 @@ import { AuthService } from './core/services/auth.service';
 export class AppComponent implements OnInit {
   title = 'ChatApp Angular Client';
   
-  // Inject AuthService để trigger khởi tạo
   private authService = inject(AuthService);
+  private router = inject(Router);
 
-  ngOnInit(): void {
-    console.log('🔧 AppComponent initialized, AuthService injected');
+  async ngOnInit(): Promise<void> {
+    console.log('🔧 AppComponent initialized, initializing AuthService');
+    await this.authService.init();
+
+    // Log router events for debugging
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationStart)
+    ).subscribe((event: NavigationStart) => {
+      console.log('🚦 Router NavigationStart:', event.url);
+    });
   }
 }

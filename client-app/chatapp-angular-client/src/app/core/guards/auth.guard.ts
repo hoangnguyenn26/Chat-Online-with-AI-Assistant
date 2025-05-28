@@ -9,13 +9,14 @@ export const authGuard: CanActivateFn = (route, state): Observable<boolean | Url
   const router = inject(Router);
 
   return authService.isLoggedIn$.pipe(
-    take(1), 
+    take(1),
     map(isLoggedIn => {
       if (isLoggedIn) {
-        return true; 
+        console.log('✅ AuthGuard: User is logged in, allowing access.');
+        return true;
       } else {
-        console.warn('AuthGuard: User not logged in. Redirecting to /login.');
-        const returnUrl = state.url || '/chat';
+        console.warn('⚠️ AuthGuard: User not logged in, redirecting to /login.');
+        const returnUrl = state.url !== '/login' ? state.url : '/chat';
         return router.createUrlTree(['/login'], { queryParams: { returnUrl } });
       }
     })

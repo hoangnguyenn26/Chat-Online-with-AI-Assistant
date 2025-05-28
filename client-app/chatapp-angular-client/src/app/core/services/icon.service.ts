@@ -14,7 +14,7 @@ export class IconService {
   registerIcons(): void {
     this.matIconRegistry.addSvgIcon(
       'google-logo',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('../assets/icons/google-logo.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/google-logo.svg')
     );
   }
 }
