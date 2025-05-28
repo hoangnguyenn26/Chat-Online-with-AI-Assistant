@@ -1,0 +1,12 @@
+<div class="login-container">
+  <h2>Welcome to ChatApp</h2>
+  <p>Please sign in to continue</p>
+
+  <button mat-raised-button color="primary" (click)="loginWithGoogle()">
+    <mat-icon svgIcon="google-logo"></mat-icon> <!-- Cần đăng ký SVG icon -->
+    Sign in with Google
+  </button>
+
+  <mat-spinner *ngIf="isLoading" diameter="50"></mat-spinner> <!-- Angular Material Spinner -->
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+</div>
