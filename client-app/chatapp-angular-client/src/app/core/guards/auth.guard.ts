@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
+export const authGuard: CanActivateFn = (route, state): Observable<boolean | UrlTree> => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -15,7 +15,8 @@ export const authGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Prom
         return true; 
       } else {
         console.warn('AuthGuard: User not logged in. Redirecting to /login.');
-        return router.createUrlTree(['/login'], { queryParams: { returnUrl: router.url } });
+        const returnUrl = state.url || '/chat';
+        return router.createUrlTree(['/login'], { queryParams: { returnUrl } });
       }
     })
   );

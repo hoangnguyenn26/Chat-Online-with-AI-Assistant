@@ -51,3 +51,9 @@ WHERE [u].[ExternalId] = @__googleUserId_0 AND [u].[ProviderName] = N'Google'
 2025-05-28 19:11:36.782 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 96.4032 ms
 2025-05-28 19:11:45.079 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /auth/logout responded 401 in 1.5585 ms
 2025-05-28 19:11:52.049 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 401 in 0.9735 ms
+2025-05-28 19:14:57.440 +07:00 [INF] () Starting ChatApp API...
+2025-05-28 19:14:57.758 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-28 19:14:57.762 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-28 19:14:57.829 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-28 19:14:57.830 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-28 19:14:57.831 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
