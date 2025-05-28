@@ -22,7 +22,6 @@ export class AuthService {
   public currentUser$: Observable<UserDto | null> = this.currentUserSubject.asObservable();
 
   constructor() {
-    // Kiểm tra token khi service khởi tạo
     this.checkInitialLoginState();
   }
 
@@ -47,8 +46,6 @@ export class AuthService {
   private async checkInitialLoginState(): Promise<void> {
     const token = localStorage.getItem('app_auth_token');
     if (token) {
-        // TODO: (Ngày 12) Gọi API /auth/me để xác thực token và lấy thông tin user mới nhất
-        // Hiện tại, chỉ load từ localStorage
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(this.getUserFromStorage());
     } else {
@@ -68,34 +65,56 @@ export class AuthService {
 
   // Sẽ được gọi từ AuthCallbackComponent
   async handleAuthCallback(token: string): Promise<void> {
-    console.log('Handling auth callback with token:', token ? 'Token Received' : 'No Token');
+    console.log('AuthService: Handling auth callback with token:', token ? 'Token Received' : 'No Token');
     if (token) {
       localStorage.setItem('app_auth_token', token);
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
+        // Đảm bảo các claim tồn tại trước khi truy cập
         const user: UserDto = {
-          id: payload.uid || payload.sub,
-          userName: payload.nameid || payload.name || payload.email.split('@')[0],
-          email: payload.email,
-          displayName: payload.name || (payload.given_name && payload.family_name ? `${payload.given_name} ${payload.family_name}`: payload.email.split('@')[0]),
-          avatarUrl: payload.avatar,
-          roles: Array.isArray(payload.role) ? payload.role : (payload.role ? [payload.role] : [])
+          id: payload.uid || payload.sub || '', // Lấy UserID từ 'uid' hoặc 'sub'
+          userName: payload.nameid || payload.name || (payload.email ? payload.email.split('@')[0] : 'User'),
+          email: payload.email || '',
+          displayName: payload.name || (payload.given_name && payload.family_name ? `${payload.given_name} ${payload.family_name}`: (payload.email ? payload.email.split('@')[0] : 'User')),
+          avatarUrl: payload.avatar || payload.picture || undefined, // 'picture' là claim chuẩn từ Google
+          roles: this.parseRoles(payload.role) // Hàm helper parse roles
         };
+
         localStorage.setItem('app_current_user', JSON.stringify(user));
         this.currentUserSubject.next(user);
         this.isLoggedInSubject.next(true);
-        console.log('User processed from token, navigating to chat.');
+        console.log('AuthService: User processed from token payload. Navigating to chat.');
         this.router.navigate(['/chat']); // Điều hướng đến trang chính sau khi login
       } catch (e) {
-        console.error('Error decoding token or setting user:', e);
-        await this.logout(); // Nếu lỗi thì logout
+        console.error('AuthService: Error decoding token or setting user during callback', e);
+        await this.logoutAndRedirectToLogin('Error processing user information from token.');
       }
     } else {
-      console.error('Auth callback received no token.');
+      console.error('AuthService: Auth callback received no token.');
+      await this.logoutAndRedirectToLogin('Authentication failed: No token received from server.');
+    }
+  }
+
+  private parseRoles(rolesClaim: any): string[] {
+    if (!rolesClaim) {
+      return [];
+    }
+    if (Array.isArray(rolesClaim)) {
+      return rolesClaim.filter(role => typeof role === 'string');
+    }
+    if (typeof rolesClaim === 'string') {
+      return [rolesClaim];
+    }
+    return [];
+  }
+
+  private async logoutAndRedirectToLogin(errorMessage?: string): Promise<void> {
+      localStorage.removeItem('app_auth_token');
+      localStorage.removeItem('app_current_user');
       this.isLoggedInSubject.next(false);
       this.currentUserSubject.next(null);
-      this.router.navigate(['/login']);
-    }
+      const queryParams = errorMessage ? { error: encodeURIComponent(errorMessage) } : {};
+      this.router.navigate(['/login'], { queryParams });
   }
 
   async logout(): Promise<void> {

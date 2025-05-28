@@ -1,0 +1,10 @@
+<div class="callback-container">
+  <div *ngIf="isLoading" class="loading-section">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Processing authentication, please wait...</p>
+  </div>
+  <div *ngIf="errorMessage" class="error-section">
+    <p class="error-message">{{ errorMessage }}</p>
+    <a routerLink="/login">Go back to Login</a>
+  </div>
+</div>

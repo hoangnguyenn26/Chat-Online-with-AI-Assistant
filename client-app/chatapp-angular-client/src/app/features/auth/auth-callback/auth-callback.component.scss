@@ -1,0 +1,25 @@
+.callback-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  text-align: center;
+}
+
+.loading-section p,
+.error-section p {
+  margin-top: 20px;
+  font-size: 1.1em;
+}
+
+.error-message {
+  color: red;
+}
+
+.error-section a {
+  margin-top: 15px;
+  display: inline-block;
+  text-decoration: underline;
+  color: var(--mat-primary-500-contrast);
+}
