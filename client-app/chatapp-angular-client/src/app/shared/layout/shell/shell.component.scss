@@ -1,0 +1,52 @@
+// src/app/shared/layout/shell/shell.component.scss
+.main-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; // Đảm bảo toolbar luôn ở trên
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer; // Cho biết có thể click (nếu dùng mat-menu)
+
+  .user-avatar, .user-avatar-default {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover; // Cho img
+    font-size: 32px; // Cho mat-icon
+  }
+
+  .user-name {
+    font-weight: 500;
+  }
+}
+
+.app-container {
+  height: calc(100vh - 64px); // Chiều cao còn lại sau toolbar (64px là chiều cao mặc định của toolbar)
+  // Hoặc height: 100%; nếu toolbar không sticky
+}
+
+.app-sidenav {
+  width: 250px;
+  // Thêm style cho sidenav nếu cần
+}
+
+.app-content {
+  padding: 15px; // Padding cho nội dung chính
+  // Đảm bảo nội dung có thể cuộn nếu dài
+  overflow: auto;
+}
+
+mat-nav-list a[mat-list-item] {
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0,0,0,0.04);
+  }
+}

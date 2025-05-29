@@ -1,0 +1,52 @@
+<mat-toolbar color="primary" class="main-toolbar">
+  <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle sidenav">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>ChatApp</span>
+  <span class="toolbar-spacer"></span>
+
+  <div *ngIf="currentUser$ | async as user" class="user-profile">
+    <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" alt="User Avatar" class="user-avatar">
+    <mat-icon *ngIf="!user.avatarUrl" class="user-avatar-default">account_circle</mat-icon>
+    <span class="user-name">{{ user.displayName }}</span>
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User Menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </button>
+      <!-- Thêm các mục menu khác cho user nếu cần -->
+    </mat-menu>
+  </div>
+
+  <button *ngIf="!(isLoggedIn$ | async)" mat-button routerLink="/login">
+    Login
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container class="app-container">
+  <mat-sidenav #sidenav mode="over" class="app-sidenav" autoFocus="false">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/chat" (click)="sidenav.close()">
+        <mat-icon matListItemIcon>chat</mat-icon>
+        <span matListItemTitle>My Chats</span>
+      </a>
+      <a mat-list-item routerLink="/users" (click)="sidenav.close()"> <!-- Giả sử có trang user list -->
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Users</span>
+      </a>
+      <!-- Thêm các mục điều hướng khác -->
+      <mat-divider *ngIf="(isLoggedIn$ | async)"></mat-divider>
+      <a *ngIf="(isLoggedIn$ | async)" mat-list-item (click)="logout(); sidenav.close()">
+        <mat-icon matListItemIcon>exit_to_app</mat-icon>
+        <span matListItemTitle>Logout</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="app-content">
+    <router-outlet></router-outlet> <!-- Nội dung của các route con sẽ hiển thị ở đây -->
+  </mat-sidenav-content>
+</mat-sidenav-container>

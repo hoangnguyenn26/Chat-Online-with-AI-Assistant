@@ -1,0 +1,6 @@
+2025-05-29 22:04:50.779 +07:00 [INF] () Starting ChatApp API...
+2025-05-29 22:04:51.163 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-05-29 22:04:51.167 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-05-29 22:04:51.366 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-05-29 22:04:51.368 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-05-29 22:04:51.370 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
