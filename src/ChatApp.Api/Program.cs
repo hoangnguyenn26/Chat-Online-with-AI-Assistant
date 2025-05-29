@@ -1,4 +1,5 @@
-﻿using ChatApp.Api.Middleware;
+﻿using ChatApp.Api.Hubs;
+using ChatApp.Api.Middleware;
 using ChatApp.Application.Interfaces.Services;
 using ChatApp.Application.Mappings;
 using ChatApp.Application.Settings;
@@ -80,6 +81,7 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(SampleValidator).Assembly);
+builder.Services.AddSignalR();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -122,6 +124,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
 
 Log.Information("Starting ChatApp API...");
 app.Run();
