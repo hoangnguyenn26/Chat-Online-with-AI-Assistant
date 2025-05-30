@@ -1,1 +1,36 @@
-<p>user-list works!</p>
+<div class="user-list-container">
+  <mat-toolbar class="user-list-header">
+    <span>Users</span>
+    <span class="toolbar-spacer"></span>
+    <!-- (Optional) Nút refresh hoặc search user -->
+    <button mat-icon-button (click)="loadUsers()" matTooltip="Refresh users">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+  <mat-list *ngIf="!isLoading && !errorMessage" class="user-mat-list">
+    <mat-list-item
+      *ngFor="let user of users; trackBy: trackByUser"
+      (click)="selectUser(user)"
+      [class.selected-user]="user.id === (selectedUser$ | async)?.id"
+      class="user-list-item">
+      <img matListItemAvatar [src]="user.avatarUrl || 'assets/images/default-avatar.png'" alt="Avatar" class="user-avatar">
+      <div matListItemTitle class="user-name">{{ user.displayName }}</div>
+      <div matListItemLine class="user-status">
+        <span class="status-indicator" [class.online]="isUserOnline(user.id) | async"></span>
+        <span *ngIf="isUserOnline(user.id) | async">Online</span>
+        <span *ngIf="!(isUserOnline(user.id) | async)">Offline</span>
+        <!-- Có thể hiển thị LastSeen nếu offline -->
+      </div>
+      <!-- (Optional) Chỉ báo tin nhắn chưa đọc -->
+      <!-- <span matListItemMeta *ngIf="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</span> -->
+    </mat-list-item>
+    <p *ngIf="users.length === 0 && !isLoading" class="empty-list-message">No users found.</p>
+  </mat-list>
+</div>

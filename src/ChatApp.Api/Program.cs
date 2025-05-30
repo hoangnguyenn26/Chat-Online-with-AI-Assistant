@@ -1,9 +1,12 @@
 ﻿using ChatApp.Api.Hubs;
 using ChatApp.Api.Middleware;
+using ChatApp.Api.SignalR;
+using ChatApp.Application.Interfaces;
 using ChatApp.Application.Interfaces.Services;
 using ChatApp.Application.Mappings;
+using ChatApp.Application.Services;
 using ChatApp.Application.Settings;
-using ChatApp.Application.Validators;
+using ChatApp.Infrastructure.Persistence;
 using ChatApp.Infrastructure.Persistence.DbContext;
 using ChatApp.Infrastructure.Services;
 using FluentValidation;
@@ -11,120 +14,196 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
 
+// Configure Serilog initial (bootstrap) logger
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(new ConfigurationBuilder()
+.ReadFrom.Configuration(new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
         .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
         .AddEnvironmentVariables()
         .Build())
     .CreateBootstrapLogger();
 
-var builder = WebApplication.CreateBuilder(args);
+try
+{
+    Log.Information("Starting ChatApp API web host");
 
-builder.Host.UseSerilog((context, services, configuration) => configuration
-    .ReadFrom.Configuration(context.Configuration)
-    .ReadFrom.Services(services)
-    .Enrich.FromLogContext());
+    var builder = WebApplication.CreateBuilder(args);
 
-// Đọc cấu hình JwtSettings
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
-                   ?? throw new InvalidOperationException("JwtSettings is not configured correctly in user secrets or appsettings.");
+    // Use Serilog for hosting
+    builder.Host.UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console());
 
-// Đọc cấu hình GoogleAuthSettings
-builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("GoogleAuthSettings"));
-var googleAuthSettings = builder.Configuration.GetSection("GoogleAuthSettings").Get<GoogleAuthSettings>()
-                       ?? throw new InvalidOperationException("GoogleAuthSettings is not configured correctly in user secrets or appsettings.");
-// Cấu hình Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-})
-.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-{
-    var googleAuthSettings = builder.Configuration.GetSection("GoogleAuthSettings").Get<GoogleAuthSettings>()
-                           ?? throw new InvalidOperationException("GoogleAuthSettings is not configured.");
-    options.ClientId = googleAuthSettings.ClientId;
-    options.ClientSecret = googleAuthSettings.ClientSecret;
-})
-.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-{
-    var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
-                       ?? throw new InvalidOperationException("JwtSettings is not configured.");
-    options.TokenValidationParameters = new TokenValidationParameters
+    // Add services to the container.
+    builder.Services.AddControllers();
+
+    // Configure Settings
+    builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+    builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("GoogleAuthSettings"));
+
+    // AutoMapper
+    builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+    // FluentValidation
+    builder.Services.AddFluentValidationAutoValidation();
+    builder.Services.AddValidatorsFromAssembly(typeof(MappingProfile).Assembly);
+
+    // Swagger/OpenAPI
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings.Issuer,
-        ValidAudience = jwtSettings.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
-    };
-});
+        options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "ChatApp API", Version = "v1" });
+
+        // Define JWT Bearer security scheme
+        options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Description = "Please enter a valid token",
+            Name = "Authorization",
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+            BearerFormat = "JWT",
+            Scheme = "Bearer"
+        });
+        options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    });
+
+    // CORS
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAngularDevClient",
+            b => b.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials());
+    });
+
+    // DbContext
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+        ));
+
+    // Authentication
+    var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
+                       ?? throw new InvalidOperationException("JWT Settings is not configured correctly.");
+    var googleAuthSettings = builder.Configuration.GetSection("GoogleAuthSettings").Get<GoogleAuthSettings>()
+                           ?? throw new InvalidOperationException("GoogleAuthSettings is not configured correctly.");
+
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    })
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.LoginPath = "/auth/login-google";
+    })
+    .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+    {
+        options.ClientId = googleAuthSettings.ClientId;
+        options.ClientSecret = googleAuthSettings.ClientSecret;
+    })
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = builder.Environment.IsProduction();
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtSettings.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                if (context.Exception is SecurityTokenExpiredException)
+                {
+                    context.Response.Headers.Append("Token-Expired", "true");
+                }
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 
-builder.Services.AddControllers();
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssembly(typeof(SampleValidator).Assembly);
-builder.Services.AddSignalR();
+    // SignalR
+    builder.Services.AddSignalR();
+    builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "ChatApp API", Version = "v1" });
-});
+    // Application Services
+    builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngularDevClient",
-        b => b.WithOrigins("http://localhost:4200")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials());
-});
+    // Infrastructure Services (Repositories, UnitOfWork)
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    var app = builder.Build();
 
-// Register các dịch vụ cần thiết
-builder.Services.AddScoped<ITokenService, TokenService>();
+    // Configure the HTTP request pipeline.
+    app.UseMiddleware<ErrorHandlingMiddleware>();
 
-var app = builder.Build();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "ChatApp API v1");
+        });
+    }
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseHttpsRedirection();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ChatApp API v1"));
+    app.UseSerilogRequestLogging();
+
+    app.UseRouting();
+
+    app.UseCors("AllowAngularDevClient"); // Apply CORS policy
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers().RequireAuthorization();
+    app.MapHub<ChatHub>("/chathub");
+
+    Log.Information("ChatApp API is starting up...");
+    app.Run();
+
 }
-
-app.UseHttpsRedirection();
-
-app.UseSerilogRequestLogging();
-app.UseRouting();
-app.UseCors("AllowAngularDevClient");
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-app.MapHub<ChatHub>("/chathub");
-
-Log.Information("Starting ChatApp API...");
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "ChatApp API host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

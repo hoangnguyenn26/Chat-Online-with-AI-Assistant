@@ -1,0 +1,11 @@
+<div class="chat-layout">
+  <app-user-list class="user-list-pane" (userSelected)="onUserSelected($event)"></app-user-list>
+  <div class="chat-area-pane">
+    <div *ngIf="selectedChatPartner; else noChatSelected">
+        <h3>Chatting with {{ selectedChatPartner.displayName }}</h3>
+    </div>
+    <ng-template #noChatSelected>
+        <p>Select a user to start chatting.</p>
+    </ng-template>
+  </div>
+</div>

@@ -1,13 +1,14 @@
-﻿using ChatApp.Application.Interfaces.Services;
+﻿using ChatApp.Application.Interfaces;
+using ChatApp.Application.Interfaces.Services;
 using ChatApp.Domain.Entities;
-using ChatApp.Infrastructure.Persistence.DbContext;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+
 
 namespace ChatApp.Api.Controllers
 {
@@ -15,43 +16,47 @@ namespace ChatApp.Api.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<AuthController> _logger;
         private readonly ITokenService _tokenService;
+        private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(ApplicationDbContext context, ILogger<AuthController> logger, ITokenService tokenService)
+        public AuthController(
+            ITokenService tokenService,
+            IUserService userService,
+            IUnitOfWork unitOfWork,
+            ILogger<AuthController> logger)
         {
-            _context = context;
-            _logger = logger;
-            _tokenService = tokenService;
+            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork)); // Ensure it's injected
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet("login-google")]
-        public IActionResult LoginWithGoogle(string? returnUrl = "http://localhost:4200/auth-callback")
+        public IActionResult LoginWithGoogle(string? returnUrl = "/")
         {
-            _logger.LogInformation("Initiating Google login. Client return URL: {ReturnUrl}", returnUrl);
+            _logger.LogInformation("Initiating Google login. Return URL (client-side): {ReturnUrl}", returnUrl);
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action(nameof(ProcessGoogleResponse)),
-                Items = { { "LoginProvider", "Google" }, { "ReturnUrl", returnUrl! } }
+
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
-        // Route này không phải là callback path trực tiếp của Google,
-        // mà là nơi CookieAuth middleware redirect tới SAU KHI Google middleware đã xử lý /signin-google
-        [HttpGet("process-google-response")]
-        public async Task<IActionResult> ProcessGoogleResponse()
+        [HttpGet("google-callback")]
+        public async Task<IActionResult> GoogleCallback(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Processing Google login response after external cookie authentication.");
+            _logger.LogInformation("Received Google callback.");
             var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (!authenticateResult.Succeeded || authenticateResult.Principal == null)
             {
-                _logger.LogWarning("External authentication (cookie) failed or principal is null.");
-                string? clientReturnUrl = authenticateResult.Properties?.Items["ReturnUrl"] ?? "http://localhost:4200/auth/login-failed";
-                return Redirect($"{clientReturnUrl}?error=google_auth_failed_after_cookie");
+                _logger.LogWarning("Google authentication failed or principal is null.");
+                return Redirect($"http://localhost:4200/auth/login-failed?error={Uri.EscapeDataString("Google authentication failed.")}");
             }
+
+            _logger.LogInformation("Google authentication successful.");
 
             var claims = authenticateResult.Principal.Claims.ToList();
             var emailClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
@@ -64,8 +69,7 @@ namespace ChatApp.Api.Controllers
             if (emailClaim == null || googleIdClaim == null)
             {
                 _logger.LogWarning("Essential claims (Email or GoogleId) not found in Google principal.");
-                string? clientReturnUrl = authenticateResult.Properties?.Items["ReturnUrl"] ?? "http://localhost:4200/auth/login-failed";
-                return Redirect($"{clientReturnUrl}?error=missing_claims");
+                return Redirect($"http://localhost:4200/auth/login-failed?error={Uri.EscapeDataString("Missing essential claims from Google.")}");
             }
 
             var userEmail = emailClaim.Value;
@@ -74,106 +78,68 @@ namespace ChatApp.Api.Controllers
             if (string.IsNullOrWhiteSpace(displayName)) displayName = userEmail.Split('@')[0];
             var avatarUrl = pictureClaim?.Value;
 
-            _logger.LogInformation("User claims extracted: Email={Email}, GoogleId={GoogleId}, Name={DisplayName}", userEmail, googleUserId, displayName);
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.ExternalId == googleUserId && u.ProviderName == "Google");
-
-            if (user == null)
+            User user;
+            try
             {
-                user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-                if (user != null)
-                {
-                    if (string.IsNullOrEmpty(user.ExternalId) || string.IsNullOrEmpty(user.ProviderName))
-                    {
-                        user.ExternalId = googleUserId;
-                        user.ProviderName = "Google";
-                        user.DisplayName = !string.IsNullOrWhiteSpace(displayName) ? displayName : user.DisplayName;
-                        user.AvatarUrl = !string.IsNullOrWhiteSpace(avatarUrl) ? avatarUrl : user.AvatarUrl;
-                        user.UpdatedAtUtc = DateTime.UtcNow;
-                        _logger.LogInformation("Linking Google account to existing user {UserId} with email {Email}.", user.Id, userEmail);
-                    }
-                    else if (user.ProviderName != "Google")
-                    {
-                        _logger.LogWarning("Email {Email} already associated with another provider: {Provider}. Google login for {GoogleId} blocked.", userEmail, user.ProviderName, googleUserId);
-                        string? clientReturnUrl = authenticateResult.Properties?.Items["ReturnUrl"] ?? "http://localhost:4200/auth/login-failed";
-                        return Redirect($"{clientReturnUrl}?error=email_conflict_provider&provider={user.ProviderName}");
-                    }
-                }
-                else
-                {
-                    user = new User
-                    {
-                        ExternalId = googleUserId,
-                        Email = userEmail,
-                        DisplayName = displayName,
-                        AvatarUrl = avatarUrl,
-                        ProviderName = "Google",
-                        IsActive = true,
-                    };
-                    _context.Users.Add(user);
-                    _logger.LogInformation("Creating new user from Google login: {Email}", userEmail);
-                }
+                user = await _userService.FindOrCreateUserFromOAuthAsync(
+                    providerName: "Google",
+                    externalId: googleUserId,
+                    email: userEmail,
+                    displayName: displayName,
+                    avatarUrl: avatarUrl,
+                    cancellationToken
+                );
             }
-            else
+            catch (ValidationException ex)
             {
-                bool changed = false;
-                if (user.DisplayName != displayName && !string.IsNullOrWhiteSpace(displayName)) { user.DisplayName = displayName; changed = true; }
-                if (user.AvatarUrl != avatarUrl && !string.IsNullOrWhiteSpace(avatarUrl)) { user.AvatarUrl = avatarUrl; changed = true; }
-                if (changed) user.UpdatedAtUtc = DateTime.UtcNow;
-                _logger.LogInformation("Existing Google user found: {Email}. Info updated: {Changed}", userEmail, changed);
+                _logger.LogWarning(ex, "Validation error during FindOrCreateUserFromOAuthAsync in Google callback.");
+                return Redirect($"http://localhost:4200/auth/login-failed?error={Uri.EscapeDataString(ex.Message)}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in FindOrCreateUserFromOAuthAsync during Google callback.");
+                return Redirect($"http://localhost:4200/auth/login-failed?error={Uri.EscapeDataString("Error processing user information.")}");
             }
 
-            await _context.SaveChangesAsync();
+            _logger.LogInformation("User {UserId} ({Email}) processed from Google callback via UserService.", user.Id, user.Email);
+            IEnumerable<string>? appUserRoles = null;
 
-            var userRoles = new List<string> { "User" };
-            string appJwtToken = _tokenService.CreateToken(user, userRoles);
+            string appJwtToken = _tokenService.GenerateJwtToken(user, appUserRoles);
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            var angularCallbackUrl = "http://localhost:4200/auth-callback";
-            _logger.LogInformation("Redirecting to Angular client with token: {AngularCallbackUrl}", angularCallbackUrl);
-
-            return Redirect($"{angularCallbackUrl}?token={Uri.EscapeDataString(appJwtToken)}&userId={user.Id}&email={Uri.EscapeDataString(user.Email)}&displayName={Uri.EscapeDataString(user.DisplayName)}&avatarUrl={Uri.EscapeDataString(user.AvatarUrl ?? "")}");
+            var clientCallbackUrl = $"http://localhost:4200/auth-callback?token={Uri.EscapeDataString(appJwtToken)}";
+            _logger.LogInformation("Redirecting to client with token: {ClientCallbackUrl}", clientCallbackUrl);
+            return Redirect(clientCallbackUrl);
         }
 
-        // GET /auth/me
         [HttpGet("me")]
         [Authorize]
-        public IActionResult Me()
+        public async Task<IActionResult> Me(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("User {UserId} requesting their profile information via /auth/me.", User.FindFirstValue(ClaimTypes.NameIdentifier));
-            // Lấy các claims cần thiết từ User.Claims
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            var displayName = User.FindFirstValue(ClaimTypes.Name);
-            var avatarUrl = User.FindFirstValue("avatar");
-
-            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))
+            if (!Guid.TryParse(userIdString, out Guid userId))
             {
                 _logger.LogWarning("/auth/me: User ID not found or invalid in token claims.");
-                return Unauthorized(new { message = "User identifier not found in token." });
+                return Unauthorized(new { message = "User identifier not found or invalid in token." });
             }
 
-            var userProfile = new
+            var userProfileDto = await _userService.GetCurrentUserProfileAsync(userId, cancellationToken);
+            if (userProfileDto == null)
             {
-                Id = userId,
-                Email = email,
-                DisplayName = displayName,
-                AvatarUrl = avatarUrl,
-                Roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList()
-            };
-
-            _logger.LogInformation("Returning profile for User {UserId}", userId);
-            return Ok(userProfile);
+                _logger.LogWarning("/auth/me: User profile DTO not found for UserId {UserId} despite valid token.", userId);
+                return Unauthorized(new { message = "User profile not found." });
+            }
+            return Ok(userProfileDto);
         }
 
-        // POST /auth/logout
         [HttpPost("logout")]
         [Authorize]
         public async Task<IActionResult> Logout()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             _logger.LogInformation("User {UserId} requesting logout.", userId ?? "Unknown");
+
             if (User.Identity != null && User.Identity.AuthenticationType == CookieAuthenticationDefaults.AuthenticationScheme)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

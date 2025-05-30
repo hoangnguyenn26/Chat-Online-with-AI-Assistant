@@ -1,7 +1,16 @@
-﻿namespace ChatApp.Application.Mappings
+﻿using AutoMapper;
+using ChatApp.Application.Dtos.Users;
+using ChatApp.Domain.Entities;
+
+namespace ChatApp.Application.Mappings
 {
-    public class MappingProfile : AutoMapper.Profile
+    public class MappingProfile : Profile
     {
-        public MappingProfile() { /* CreateMap... */ }
+        public MappingProfile()
+        {
+            // ... các mapping khác ...
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Roles, opt => opt.Ignore());
+        }
     }
 }

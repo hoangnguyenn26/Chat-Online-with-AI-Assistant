@@ -1,0 +1,76 @@
+// src/app/features/chat/components/user-list/user-list.component.scss
+.user-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; // Để chiếm hết chiều cao của container cha
+  border-right: 1px solid #e0e0e0; // Đường phân cách nếu đây là sidebar
+}
+
+.user-list-header {
+  background-color: #f5f5f5; // Màu nền nhẹ cho header
+  min-height: 56px; // Chiều cao nhỏ hơn toolbar chính
+  button {
+    color: #666;
+  }
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.error-message, .empty-list-message {
+  padding: 20px;
+  text-align: center;
+  color: #757575;
+}
+
+.user-mat-list {
+  flex-grow: 1; // Cho phép list co giãn
+  overflow-y: auto; // Cho phép cuộn nếu list dài
+}
+
+.user-list-item {
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0,0,0,0.04);
+  }
+  &.selected-user {
+    background-color: rgba(0,0,0,0.08); // Màu nền khi được chọn
+    // border-left: 3px solid var(--mat-primary-500-contrast); // Hoặc một chỉ báo khác
+  }
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 16px; // Mặc định của matListItemAvatar
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.user-status {
+  font-size: 0.8em;
+  color: #757575;
+  display: flex;
+  align-items: center;
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ccc; // Offline color
+    margin-right: 6px;
+    display: inline-block;
+
+    &.online {
+      background-color: #4CAF50; // Online color (Green)
+    }
+  }
+}
