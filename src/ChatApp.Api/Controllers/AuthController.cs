@@ -39,7 +39,7 @@ namespace ChatApp.Api.Controllers
             _logger.LogInformation("Initiating Google login. Return URL (client-side): {ReturnUrl}", returnUrl);
             var properties = new AuthenticationProperties
             {
-
+                RedirectUri = Url.Action(nameof(GoogleCallback))
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }

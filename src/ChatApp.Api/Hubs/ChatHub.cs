@@ -120,28 +120,28 @@ namespace ChatApp.Api.Hubs
             if (string.IsNullOrEmpty(senderIdString) || !Guid.TryParse(senderIdString, out Guid senderId))
             {
                 _logger.LogWarning("SendPrivateMessage: SenderId not found or invalid in claims for ConnectionId {ConnectionId}.", Context.ConnectionId);
-                // await Clients.Caller.SendAsync("ReceiveMessageError", "Authentication required to send messages.");
+                await Clients.Caller.SendAsync("ReceiveMessageError", "Authentication required to send messages.");
                 return;
             }
 
             if (string.IsNullOrEmpty(receiverUserIdString) || !Guid.TryParse(receiverUserIdString, out Guid receiverId))
             {
                 _logger.LogWarning("SendPrivateMessage: Invalid ReceiverUserId format '{ReceiverUserIdString}' from Sender {SenderId}.", receiverUserIdString, senderId);
-                // await Clients.Caller.SendAsync("ReceiveMessageError", "Invalid recipient ID.");
+                await Clients.Caller.SendAsync("ReceiveMessageError", "Invalid recipient ID.");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(messageContent))
             {
                 _logger.LogWarning("SendPrivateMessage: Empty message content from Sender {SenderId} to Receiver {ReceiverId}.", senderId, receiverId);
-                // await Clients.Caller.SendAsync("ReceiveMessageError", "Message content cannot be empty.");
+                await Clients.Caller.SendAsync("ReceiveMessageError", "Message content cannot be empty.");
                 return;
             }
 
             if (senderId == receiverId)
             {
                 _logger.LogWarning("SendPrivateMessage: Sender {SenderId} attempting to send message to themselves.", senderId);
-                // await Clients.Caller.SendAsync("ReceiveMessageError", "Cannot send message to yourself in this context.");
+                await Clients.Caller.SendAsync("ReceiveMessageError", "Cannot send message to yourself in this context.");
                 return;
             }
 

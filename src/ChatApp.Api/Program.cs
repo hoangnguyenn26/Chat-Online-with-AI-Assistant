@@ -20,27 +20,19 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
 
-// Configure Serilog initial (bootstrap) logger
-Log.Logger = new LoggerConfiguration()
-.ReadFrom.Configuration(new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-        .AddEnvironmentVariables()
-        .Build())
-    .CreateBootstrapLogger();
-
 try
 {
     Log.Information("Starting ChatApp API web host");
 
     var builder = WebApplication.CreateBuilder(args);
+    builder.Logging.ClearProviders();
 
     // Use Serilog for hosting
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
         .Enrich.FromLogContext()
-        .WriteTo.Console());
+        );
 
     // Add services to the container.
     builder.Services.AddControllers();
@@ -117,6 +109,10 @@ try
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.LoginPath = "/auth/login-google";
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.Name = "ChatApp.Auth";
     })
     .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
     {
