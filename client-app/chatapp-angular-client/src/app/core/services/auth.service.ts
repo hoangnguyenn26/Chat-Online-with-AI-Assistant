@@ -1,10 +1,10 @@
 // src/app/core/services/auth.service.ts
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs'; // Thêm firstValueFrom
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs'; 
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { UserDto, LoginResponseDto } from '../models/auth.dtos'; // Đảm bảo đường dẫn đúng
+import { UserDto, LoginResponseDto } from '../models/auth.dtos';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class AuthService {
   private platformId = inject(PLATFORM_ID); // Inject PLATFORM_ID
 
   private _authToken: string | null = null;
-  private _initialized = false; // Cờ để đảm bảo init chỉ chạy một lần
+  private _initialized = false;
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$: Observable<boolean> = this.isLoggedInSubject.asObservable();
@@ -86,7 +86,7 @@ export class AuthService {
           this.setLocalStorageItem(this.USER_KEY, JSON.stringify(userProfile));
           this.currentUserSubject.next(userProfile);
           this.isLoggedInSubject.next(true);
-          console.log('✅ AuthService: Session restored and verified for user:', userProfile.userName);
+          console.log('✅ AuthService: Session restored and verified for user:', userProfile.displayName || userProfile.email);
         } else {
           console.warn('⚠️ AuthService: Token verification via /auth/me did not return a user profile. Clearing state.');
           await this.clearAuthStateAndStorage();
@@ -169,7 +169,7 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
-    console.log(`🔄 AuthService: Logging out user ${this.currentUserSubject.value?.userName || '(unknown)'}...`);
+    console.log(`🔄 AuthService: Logging out user ${this.currentUserSubject.value?.displayName || this.currentUserSubject.value?.email || '(unknown)'}...`);
     await firstValueFrom(this.http.post(`${this.API_BASE_URL}/auth/logout`, {})).catch(err => console.error("Error calling server logout", err));
     await this.clearAuthStateAndStorage();
     if (this.isBrowser()) {
