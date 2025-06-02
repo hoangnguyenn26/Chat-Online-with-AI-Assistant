@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -40,6 +40,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   isLoadingHistory = false;
 
   private subscriptions = new Subscription();
+
+  @Input() activeChatPartner: UserDto | null = null;
 
   constructor() {
     this.selectedChatPartner$ = this.chatStateService.selectedChatPartner$;

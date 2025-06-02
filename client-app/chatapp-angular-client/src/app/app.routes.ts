@@ -19,11 +19,7 @@ export const appRoutes: Routes = [
     children: [
       {
         path: 'chat',
-        loadComponent: () => import('./features/chat/chat-window/chat-window.component').then(m => m.ChatWindowComponent)
-      },
-      {
-        path: 'users', // Ví dụ trang danh sách user
-        loadComponent: () => import('./features/chat/components/user-list/user-list.component').then(m => m.UserListComponent) // Hoặc một component riêng
+        loadComponent: () => import('./features/chat/chat-layout/chat-layout.component').then(m => m.ChatLayoutComponent)
       },
       // Thêm các route con khác cần Shell Layout ở đây (Profile, Settings...)
       {

@@ -12,6 +12,7 @@ import { map, distinctUntilChanged } from 'rxjs/operators';
 import { UserDto } from '../../../../core/models/auth.dtos';
 import { UserPresenceService } from '../../../../core/services/user-presence.service';
 import { environment } from '../../../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-list',
@@ -32,6 +33,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private userPresenceService = inject(UserPresenceService);
   private readonly API_USERS_URL = `${environment.apiBaseUrl}/api/users`;
+  private router = inject(Router);
 
   users: UserDto[] = [];
   isLoading = false;

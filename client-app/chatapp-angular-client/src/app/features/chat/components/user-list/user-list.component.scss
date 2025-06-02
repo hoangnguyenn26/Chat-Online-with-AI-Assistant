@@ -4,6 +4,7 @@
   flex-direction: column;
   height: 100%; // Để chiếm hết chiều cao của container cha
   border-right: 1px solid #e0e0e0; // Đường phân cách nếu đây là sidebar
+  background: #fff;
 }
 
 .user-list-header {
@@ -72,5 +73,29 @@
     &.online {
       background-color: #4CAF50; // Online color (Green)
     }
+  }
+}
+
+@media (max-width: 767px) {
+  .user-list-container {
+    min-width: 0;
+    width: 100vw;
+    border-right: none;
+    padding: 4px;
+  }
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
+  .user-list-header {
+    min-height: 44px;
+    font-size: 1em;
+  }
+  .user-name {
+    font-size: 0.95em;
+  }
+  .user-status {
+    font-size: 0.7em;
   }
 }
