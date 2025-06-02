@@ -34,6 +34,7 @@ namespace ChatApp.Api.Controllers
         }
 
         [HttpGet("login-google")]
+        [AllowAnonymous]
         public IActionResult LoginWithGoogle(string? returnUrl = "/")
         {
             _logger.LogInformation("Initiating Google login. Return URL (client-side): {ReturnUrl}", returnUrl);
@@ -45,6 +46,7 @@ namespace ChatApp.Api.Controllers
         }
 
         [HttpGet("google-callback")]
+        [AllowAnonymous]
         public async Task<IActionResult> GoogleCallback(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Received Google callback.");

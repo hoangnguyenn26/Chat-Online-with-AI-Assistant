@@ -6,12 +6,10 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptorFn: HttpInterceptorFn = (
-  req: HttpRequest<unknown>,
-  next: HttpHandlerFn
+  req, next
 ) => {
-  const authService = inject(AuthService); 
+  const authService = inject(AuthService);
   const authToken = authService.getCurrentToken();
-  const router = inject(Router);
 
   let authReq = req;
   if (authToken && !req.url.includes('/auth/login') && !req.url.includes('/auth/register')) {
@@ -24,9 +22,13 @@ export const authInterceptorFn: HttpInterceptorFn = (
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
+      if (
+        error.status === 401 &&
+        !req.url.includes('/auth/logout') &&
+        !req.url.includes('/auth/me') // <--- Thêm điều kiện này
+      ) {
         console.warn('AuthInterceptorFn: Received 401 Unauthorized. Logging out.');
-        authService.logout(); // AuthService sẽ tự điều hướng
+        authService.logout();
       }
       return throwError(() => error);
     })

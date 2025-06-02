@@ -27,7 +27,7 @@ namespace ChatApp.Api.Hubs
             if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))
             {
                 _logger.LogWarning("SignalR: User connected without valid UserId in claims. ConnectionId: {ConnectionId}", Context.ConnectionId);
-                await base.OnConnectedAsync();
+                Context.Abort();
                 return;
             }
 

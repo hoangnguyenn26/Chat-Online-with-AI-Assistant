@@ -103,16 +103,17 @@ try
 
     builder.Services.AddAuthentication(options =>
     {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     })
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
-        options.LoginPath = "/auth/login-google";
-        options.Cookie.SameSite = SameSiteMode.None;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.Name = "ChatApp.Auth.ExternalCookie";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
         options.Cookie.HttpOnly = true;
-        options.Cookie.Name = "ChatApp.Auth";
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SameSite = SameSiteMode.Lax;
     })
     .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
     {
@@ -151,7 +152,6 @@ try
         };
     });
 
-
     // SignalR
     builder.Services.AddSignalR();
     builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
@@ -183,7 +183,7 @@ try
 
     app.UseRouting();
 
-    app.UseCors("AllowAngularDevClient"); // Apply CORS policy
+    app.UseCors("AllowAngularDevClient");
 
     app.UseAuthentication();
     app.UseAuthorization();

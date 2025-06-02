@@ -79,7 +79,6 @@ export class AuthService {
       this._authToken = token;
       console.log('ℹ️ AuthService: Token found in storage. Verifying with /auth/me...');
       try {
-        // Sử dụng firstValueFrom để chuyển Observable thành Promise một cách an toàn hơn toPromise() (deprecated)
         const userProfile = await firstValueFrom(this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`));
 
         if (userProfile) {
@@ -94,7 +93,6 @@ export class AuthService {
       } catch (error: any) {
         console.error('❌ AuthService: Error verifying token with /auth/me. Clearing state.', error instanceof HttpErrorResponse ? error.message : error);
         await this.clearAuthStateAndStorage();
-        // Không điều hướng từ đây, để guard hoặc component xử lý
       }
     } else {
       console.log('ℹ️ AuthService: No token found in storage. Ensuring clean state.');
@@ -114,20 +112,28 @@ export class AuthService {
   }
 
   public getCurrentToken(): string | null {
-    // Ưu tiên token trong bộ nhớ, sau đó mới đến localStorage
-    return this._authToken || localStorage.getItem('app_auth_token');
+    if (this.isBrowser()) { 
+      return this._authToken || localStorage.getItem(this.TOKEN_KEY);
+    }
+    return this._authToken;
   }
 
   loginWithGoogle(): void {
-    if (!this.isBrowser()) return;
+    if (!this.isBrowser()) {
+      console.warn('AuthService: loginWithGoogle called on server. This should not happen.');
+      return;
+    }
     const apiLoginGoogleUrl = `${this.API_BASE_URL}/auth/login-google`;
-    console.log(`🔄 AuthService: Redirecting to Google login via API: ${apiLoginGoogleUrl}`);
+    console.log(`AuthService: Redirecting to Google login via API: ${apiLoginGoogleUrl}`);
     window.location.href = apiLoginGoogleUrl;
   }
 
   async handleAuthCallback(token: string): Promise<void> {
     console.log('🔄 AuthService: Handling auth callback with token:', token ? 'Token Received' : 'No Token');
-    if (!this.isBrowser()) return;
+    if (!this.isBrowser()) {
+        console.warn('AuthService: handleAuthCallback called on server. This should not happen.');
+        return;
+    }
 
     if (!token) {
       console.error('❌ AuthService: Auth callback received no token.');
@@ -137,7 +143,8 @@ export class AuthService {
 
     this.setLocalStorageItem(this.TOKEN_KEY, token);
     this._authToken = token;
-
+    console.log('ℹ️ AuthService: Token stored in localStorage and service instance.');
+    
     try {
       console.log('🔄 AuthService: Calling /auth/me to fetch user profile after callback...');
       const userProfile = await firstValueFrom(this.http.get<UserDto>(`${this.API_BASE_URL}/auth/me`));
@@ -159,13 +166,11 @@ export class AuthService {
   }
 
   private async logoutAndRedirectToLogin(errorMessage?: string): Promise<void> {
-    await this.clearAuthStateAndStorage();
-    console.log(`↪️ AuthService: Redirecting to login. Error: ${errorMessage || 'N/A'}`);
-    const queryParams = errorMessage ? { error: encodeURIComponent(errorMessage) } : {};
-    // Đảm bảo điều hướng chỉ xảy ra ở browser
-    if (this.isBrowser()) {
-        await this.router.navigate(['/login'], { queryParams });
-    }
+  await this.clearAuthStateAndStorage(); 
+  if (this.isBrowser()) { 
+      const queryParams = errorMessage ? { error: encodeURIComponent(errorMessage) } : {};
+      this.router.navigate(['/login'], { queryParams });
+  }
   }
 
   async logout(): Promise<void> {

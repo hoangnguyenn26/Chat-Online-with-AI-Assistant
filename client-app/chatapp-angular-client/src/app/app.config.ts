@@ -1,16 +1,20 @@
-import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer } from '@angular/core';
+import { 
+  ApplicationConfig, 
+  PLATFORM_ID, 
+  inject,
+  importProvidersFrom,
+  provideAppInitializer
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { appRoutes } from './app.routes';
-import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 
-// IconService and AuthService
 import { IconService } from './core/services/icon.service';
 import { AuthService } from './core/services/auth.service';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-
-// HTTP Interceptor
 import { authInterceptorFn } from './core/http-interceptors/auth.interceptor.fn';
+import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,15 +24,27 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([authInterceptorFn])
     ),
+    importProvidersFrom(MatIconModule),
     IconService,
     AuthService,
+
     provideAppInitializer(() => {
       const iconService = inject(IconService);
-      return iconService.registerIcons();
+      const platformId = inject(PLATFORM_ID);
+      
+      if (isPlatformBrowser(platformId)) {
+        iconService.registerIcons();
+      }
     }),
+    
     provideAppInitializer(() => {
       const authService = inject(AuthService);
-      return authService.init();
-    }),
+      const platformId = inject(PLATFORM_ID);
+      
+      if (isPlatformBrowser(platformId)) {
+        return authService.init(); 
+      }
+      return Promise.resolve();
+    })
   ]
 };
