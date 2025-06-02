@@ -1,0 +1,5 @@
+<div class="chat-container">
+  <app-user-list class="user-list-pane" (userSelected)="onChatPartnerSelected($event)"></app-user-list>
+  <app-chat-window class="chat-window-pane" [activeChatPartner]="selectedPartnerForChatWindow"></app-chat-window>
+  <!-- Hoặc ChatWindowComponent là router-outlet của ChatLayoutComponent -->
+</div>

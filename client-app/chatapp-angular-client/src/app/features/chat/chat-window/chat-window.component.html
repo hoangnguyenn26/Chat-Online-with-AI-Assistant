@@ -1,11 +1,31 @@
-<div class="chat-layout">
-  <app-user-list class="user-list-pane" (userSelected)="onUserSelected($event)"></app-user-list>
-  <div class="chat-area-pane">
-    <div *ngIf="selectedChatPartner; else noChatSelected">
-        <h3>Chatting with {{ selectedChatPartner.displayName }}</h3>
-    </div>
-    <ng-template #noChatSelected>
-        <p>Select a user to start chatting.</p>
-    </ng-template>
+<div class="chat-window-layout">
+  <!-- Phần User List sẽ được hiển thị bên cạnh hoặc như một phần của layout cha (ví dụ Shell) -->
+  <!-- Giả sử UserListComponent được đặt ở nơi khác và emit user được chọn -->
+
+  <div class="chat-area" *ngIf="selectedChatPartner$ | async as partner; else noPartnerSelected">
+    <mat-toolbar class="chat-header">
+      <button mat-icon-button (click)="goBackToList()" class="back-button" *ngIf="isMobileView"> <!-- Chỉ hiện nút back trên mobile -->
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <img [src]="partner.avatarUrl || 'assets/images/default-avatar.png'" alt="Partner Avatar" class="partner-avatar">
+      <span>{{ partner.displayName }}</span>
+      <span class="toolbar-spacer"></span>
+      <!-- (Optional) Nút thông tin user, call... -->
+    </mat-toolbar>
+
+    <app-message-list
+      [messages]="(currentMessages$ | async) ?? []"
+      [isLoadingHistory]="isLoadingHistory"
+      (loadMoreHistory)="loadMoreMessages()">
+    </app-message-list>
+
+    <app-message-input (messageSent)="onMessageSent($event)"></app-message-input>
   </div>
+
+  <ng-template #noPartnerSelected>
+    <div class="no-chat-selected-placeholder">
+      <mat-icon>chat</mat-icon>
+      <p>Select a user from the list to start chatting.</p>
+    </div>
+  </ng-template>
 </div>

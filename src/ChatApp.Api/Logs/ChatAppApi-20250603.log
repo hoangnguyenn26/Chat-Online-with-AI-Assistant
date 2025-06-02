@@ -1,0 +1,284 @@
+2025-06-03 00:17:21.594 +07:00 [INF] () ChatApp API is starting up...
+2025-06-03 00:17:22.106 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-03 00:17:22.110 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-03 00:17:22.316 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-03 00:17:22.318 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-03 00:17:22.319 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-03 00:18:07.188 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-03 00:18:07.217 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 1472.4897 ms
+2025-06-03 00:18:09.966 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 443.5272 ms
+2025-06-03 00:18:10.010 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Received Google callback.
+2025-06-03 00:18:10.014 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Google authentication successful.
+2025-06-03 00:18:10.018 +07:00 [INF] (ChatApp.Application.Services.UserService) Finding or creating user from OAuth. Provider: Google, ExternalId: 110932885050862021885, Email: hoangnguyenn268@gmail.com
+2025-06-03 00:18:11.814 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (90ms) [Parameters=[@__providerName_0='?' (Size = 50), @__externalId_1='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ProviderName] = @__providerName_0 AND [u].[ExternalId] = @__externalId_1
+2025-06-03 00:18:11.891 +07:00 [INF] (ChatApp.Application.Services.UserService) Existing user found by ExternalId 110932885050862021885 for Provider Google. Updating info if changed.
+2025-06-03 00:18:11.923 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" (hoangnguyenn268@gmail.com) processed from Google callback via UserService.
+2025-06-03 00:18:11.926 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Generating JWT token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" - hoangnguyenn268@gmail.com
+2025-06-03 00:18:11.978 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) JWT token generated successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa". Token Expiry: "2025-06-02T18:18:11.9284733Z"
+2025-06-03 00:18:11.982 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to client with token: http://localhost:4200/auth-callback?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhYTM0YWJlMi0yODRhLTRjMDItYWM5ZS1hZTM4M2ViNGRjNzgiLCJzdWIiOiIyMWMzMzA5OS1lZTZiLTRlNjItODNhOC1mN2M1MWMwYmU0ZmEiLCJlbWFpbCI6ImhvYW5nbmd1eWVubjI2OEBnbWFpbC5jb20iLCJuYW1lIjoiTmd1ecOqbiBIb8OgbmciLCJ1aWQiOiIyMWMzMzA5OS1lZTZiLTRlNjItODNhOC1mN2M1MWMwYmU0ZmEiLCJhdmF0YXIiOiIiLCJuYmYiOjE3NDg4ODQ2OTEsImV4cCI6MTc0ODg4ODI5MSwiaWF0IjoxNzQ4ODg0NjkxLCJpc3MiOiJDaGF0QXBwQXBpIiwiYXVkIjoiQ2hhdEFwcENsaWVudCJ9.4TA_a05sbYcwU8RQa_K_DnlKSl3Fy1S1EyFsW53eJjU
+2025-06-03 00:18:11.987 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/google-callback responded 302 in 2008.2299 ms
+2025-06-03 00:18:12.303 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 3.3141 ms
+2025-06-03 00:18:12.390 +07:00 [INF] (ChatApp.Application.Services.UserService) Fetching profile for current user "21c33099-ee6b-4e62-83a8-f7c51c0be4fa"
+2025-06-03 00:18:12.447 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__id_0
+2025-06-03 00:18:12.482 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [UserConnections] AS [u]
+        WHERE [u].[UserId] = @__userId_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-06-03 00:18:12.513 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 201.6074 ms
+2025-06-03 00:18:12.528 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.3838 ms
+2025-06-03 00:18:12.541 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 5.9898 ms
+2025-06-03 00:18:12.550 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP CONNECT /chathub responded 401 in 3.1700 ms
+2025-06-03 00:18:12.557 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0668 ms
+2025-06-03 00:18:12.562 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.5735 ms
+2025-06-03 00:18:12.618 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 401 in 0.3548 ms
+2025-06-03 00:18:12.626 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0728 ms
+2025-06-03 00:18:12.631 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.3836 ms
+2025-06-03 00:18:12.637 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0538 ms
+2025-06-03 00:18:12.649 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 8.4799 ms
+2025-06-03 00:18:12.660 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.1041 ms
+2025-06-03 00:18:12.660 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0559 ms
+2025-06-03 00:18:12.670 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub responded 200 in 2.3187 ms
+2025-06-03 00:18:12.676 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 12.6014 ms
+2025-06-03 00:18:12.680 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" connected with ConnectionId 5jk62zEQRKr3LGGFscJW7g
+2025-06-03 00:18:12.682 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0617 ms
+2025-06-03 00:18:12.697 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[@__Context_ConnectionId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[ConnectionId], [u].[ConnectedAtUtc], [u].[UserId]
+FROM [UserConnections] AS [u]
+WHERE [u].[ConnectionId] = @__Context_ConnectionId_0
+2025-06-03 00:18:12.757 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__p_0
+2025-06-03 00:18:12.855 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (5ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Guid), @p12='?' (DbType = Guid), @p3='?' (Size = 2048), @p4='?' (DbType = DateTime2), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 256), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTime2), @p10='?' (Size = 50), @p11='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [UserConnections] ([ConnectionId], [ConnectedAtUtc], [UserId])
+VALUES (@p0, @p1, @p2);
+UPDATE [Users] SET [AvatarUrl] = @p3, [CreatedAtUtc] = @p4, [DisplayName] = @p5, [Email] = @p6, [ExternalId] = @p7, [IsActive] = @p8, [LastSeenUtc] = @p9, [ProviderName] = @p10, [UpdatedAtUtc] = @p11
+OUTPUT 1
+WHERE [Id] = @p12;
+2025-06-03 00:18:12.879 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: Notified others that User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" is online
+2025-06-03 00:18:41.991 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-03 00:18:41.994 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 3.9658 ms
+2025-06-03 00:18:55.860 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 166.1147 ms
+2025-06-03 00:18:55.868 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Received Google callback.
+2025-06-03 00:18:55.869 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Google authentication successful.
+2025-06-03 00:18:55.873 +07:00 [INF] (ChatApp.Application.Services.UserService) Finding or creating user from OAuth. Provider: Google, ExternalId: 108767110743796812723, Email: hoangnguyennstorage@gmail.com
+2025-06-03 00:18:55.883 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (3ms) [Parameters=[@__providerName_0='?' (Size = 50), @__externalId_1='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ProviderName] = @__providerName_0 AND [u].[ExternalId] = @__externalId_1
+2025-06-03 00:18:55.889 +07:00 [INF] (ChatApp.Application.Services.UserService) User not found by ExternalId. Checking by Email: hoangnguyennstorage@gmail.com
+2025-06-03 00:18:55.899 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[@__email_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__email_0
+2025-06-03 00:18:55.906 +07:00 [INF] (ChatApp.Application.Services.UserService) Creating new user. Email: hoangnguyennstorage@gmail.com, Provider: Google
+2025-06-03 00:18:55.927 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 2048), @p2='?' (DbType = DateTime2), @p3='?' (Size = 256), @p4='?' (Size = 256), @p5='?' (Size = 256), @p6='?' (DbType = Boolean), @p7='?' (DbType = DateTime2), @p8='?' (Size = 50), @p9='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([Id], [AvatarUrl], [CreatedAtUtc], [DisplayName], [Email], [ExternalId], [IsActive], [LastSeenUtc], [ProviderName], [UpdatedAtUtc])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2025-06-03 00:18:55.935 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" (hoangnguyennstorage@gmail.com) processed from Google callback via UserService.
+2025-06-03 00:18:55.940 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Generating JWT token for User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" - hoangnguyennstorage@gmail.com
+2025-06-03 00:18:55.942 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) JWT token generated successfully for User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68". Token Expiry: "2025-06-02T18:18:55.9421875Z"
+2025-06-03 00:18:55.946 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to client with token: http://localhost:4200/auth-callback?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkODAyMDQ4NS02ZGQ5LTQyODAtYjJiOC02OTc0MDE1OTg5NDAiLCJzdWIiOiJiNWMzMGFhMS0xNzJhLTRiZDYtOTU3OS1kM2QzNmM1NWNhNjgiLCJlbWFpbCI6ImhvYW5nbmd1eWVubnN0b3JhZ2VAZ21haWwuY29tIiwibmFtZSI6IkhvYW5nIE5ndXllbiIsInVpZCI6ImI1YzMwYWExLTE3MmEtNGJkNi05NTc5LWQzZDM2YzU1Y2E2OCIsImF2YXRhciI6IiIsIm5iZiI6MTc0ODg4NDczNSwiZXhwIjoxNzQ4ODg4MzM1LCJpYXQiOjE3NDg4ODQ3MzUsImlzcyI6IkNoYXRBcHBBcGkiLCJhdWQiOiJDaGF0QXBwQ2xpZW50In0.PeGwQdhSRNswpB_tBDU7pqIyrhUEy1Jiu5rokb8FZ3k
+2025-06-03 00:18:55.952 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/google-callback responded 302 in 84.1531 ms
+2025-06-03 00:18:56.146 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.1604 ms
+2025-06-03 00:18:56.151 +07:00 [INF] (ChatApp.Application.Services.UserService) Fetching profile for current user "b5c30aa1-172a-4bd6-9579-d3d36c55ca68"
+2025-06-03 00:18:56.156 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__id_0
+2025-06-03 00:18:56.163 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [UserConnections] AS [u]
+        WHERE [u].[UserId] = @__userId_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-06-03 00:18:56.169 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 18.5961 ms
+2025-06-03 00:18:56.176 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0613 ms
+2025-06-03 00:18:56.184 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.4015 ms
+2025-06-03 00:18:56.190 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP CONNECT /chathub responded 401 in 0.1884 ms
+2025-06-03 00:18:56.235 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0548 ms
+2025-06-03 00:18:56.239 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.3357 ms
+2025-06-03 00:18:56.245 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 401 in 0.1429 ms
+2025-06-03 00:18:56.252 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.1019 ms
+2025-06-03 00:18:56.258 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.3561 ms
+2025-06-03 00:18:56.262 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0699 ms
+2025-06-03 00:18:56.267 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 0.6816 ms
+2025-06-03 00:18:56.271 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0740 ms
+2025-06-03 00:18:56.272 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0494 ms
+2025-06-03 00:18:56.279 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub responded 200 in 0.4658 ms
+2025-06-03 00:18:56.279 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 2.8542 ms
+2025-06-03 00:18:56.279 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" connected with ConnectionId MwSjoo_MQ901RlAVkJ7i3A
+2025-06-03 00:18:56.292 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0728 ms
+2025-06-03 00:18:56.294 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[@__Context_ConnectionId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[ConnectionId], [u].[ConnectedAtUtc], [u].[UserId]
+FROM [UserConnections] AS [u]
+WHERE [u].[ConnectionId] = @__Context_ConnectionId_0
+2025-06-03 00:18:56.301 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__p_0
+2025-06-03 00:18:56.308 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (3ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Guid), @p12='?' (DbType = Guid), @p3='?' (Size = 2048), @p4='?' (DbType = DateTime2), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 256), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTime2), @p10='?' (Size = 50), @p11='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [UserConnections] ([ConnectionId], [ConnectedAtUtc], [UserId])
+VALUES (@p0, @p1, @p2);
+UPDATE [Users] SET [AvatarUrl] = @p3, [CreatedAtUtc] = @p4, [DisplayName] = @p5, [Email] = @p6, [ExternalId] = @p7, [IsActive] = @p8, [LastSeenUtc] = @p9, [ProviderName] = @p10, [UpdatedAtUtc] = @p11
+OUTPUT 1
+WHERE [Id] = @p12;
+2025-06-03 00:18:56.320 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: Notified others that User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" is online
+2025-06-03 00:18:56.320 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 43634.2699 ms
+2025-06-03 00:18:56.328 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0503 ms
+2025-06-03 00:18:59.347 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /api/users responded 204 in 0.2084 ms
+2025-06-03 00:18:59.353 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /api/users responded 404 in 0.5267 ms
+2025-06-03 00:19:00.673 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /api/users responded 404 in 0.2714 ms
+2025-06-03 00:20:12.167 +07:00 [INF] () ChatApp API is starting up...
+2025-06-03 00:20:12.471 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-03 00:20:12.475 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-03 00:20:12.552 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-03 00:20:12.553 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-03 00:20:12.555 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-03 00:20:12.741 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 25.9945 ms
+2025-06-03 00:20:12.740 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 26.5404 ms
+2025-06-03 00:20:12.905 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 145.0313 ms
+2025-06-03 00:20:12.905 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 145.0361 ms
+2025-06-03 00:20:12.923 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP CONNECT /chathub responded 401 in 9.1546 ms
+2025-06-03 00:20:12.923 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP CONNECT /chathub responded 401 in 9.1377 ms
+2025-06-03 00:20:12.932 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0842 ms
+2025-06-03 00:20:12.933 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0460 ms
+2025-06-03 00:20:12.937 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.8687 ms
+2025-06-03 00:20:12.940 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.4535 ms
+2025-06-03 00:20:12.948 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 401 in 0.2332 ms
+2025-06-03 00:20:12.948 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 401 in 0.2426 ms
+2025-06-03 00:20:12.954 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0605 ms
+2025-06-03 00:20:12.957 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0697 ms
+2025-06-03 00:20:12.960 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.6707 ms
+2025-06-03 00:20:12.963 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.3236 ms
+2025-06-03 00:20:12.966 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0756 ms
+2025-06-03 00:20:12.969 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0741 ms
+2025-06-03 00:20:12.981 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 10.8426 ms
+2025-06-03 00:20:12.981 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 6.4025 ms
+2025-06-03 00:20:12.988 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0785 ms
+2025-06-03 00:20:12.988 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0735 ms
+2025-06-03 00:20:12.990 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0548 ms
+2025-06-03 00:20:12.990 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0689 ms
+2025-06-03 00:20:12.998 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub responded 200 in 1.5496 ms
+2025-06-03 00:20:12.998 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub responded 200 in 3.3756 ms
+2025-06-03 00:20:13.012 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 20.7832 ms
+2025-06-03 00:20:13.012 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 13.2381 ms
+2025-06-03 00:20:13.019 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0581 ms
+2025-06-03 00:20:13.023 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0533 ms
+2025-06-03 00:20:13.150 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" connected with ConnectionId oDeMLfQtHMRCCv3Vo_FmSg
+2025-06-03 00:20:13.150 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" connected with ConnectionId jBgosUqnogJwMNysyFpMWA
+2025-06-03 00:20:14.310 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (43ms) [Parameters=[@__Context_ConnectionId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[ConnectionId], [u].[ConnectedAtUtc], [u].[UserId]
+FROM [UserConnections] AS [u]
+WHERE [u].[ConnectionId] = @__Context_ConnectionId_0
+2025-06-03 00:20:14.310 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (43ms) [Parameters=[@__Context_ConnectionId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[ConnectionId], [u].[ConnectedAtUtc], [u].[UserId]
+FROM [UserConnections] AS [u]
+WHERE [u].[ConnectionId] = @__Context_ConnectionId_0
+2025-06-03 00:20:14.436 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (3ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__p_0
+2025-06-03 00:20:14.436 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (3ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__p_0
+2025-06-03 00:20:14.600 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Guid), @p12='?' (DbType = Guid), @p3='?' (Size = 2048), @p4='?' (DbType = DateTime2), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 256), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTime2), @p10='?' (Size = 50), @p11='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [UserConnections] ([ConnectionId], [ConnectedAtUtc], [UserId])
+VALUES (@p0, @p1, @p2);
+UPDATE [Users] SET [AvatarUrl] = @p3, [CreatedAtUtc] = @p4, [DisplayName] = @p5, [Email] = @p6, [ExternalId] = @p7, [IsActive] = @p8, [LastSeenUtc] = @p9, [ProviderName] = @p10, [UpdatedAtUtc] = @p11
+OUTPUT 1
+WHERE [Id] = @p12;
+2025-06-03 00:20:14.600 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (4ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Guid), @p12='?' (DbType = Guid), @p3='?' (Size = 2048), @p4='?' (DbType = DateTime2), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 256), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTime2), @p10='?' (Size = 50), @p11='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [UserConnections] ([ConnectionId], [ConnectedAtUtc], [UserId])
+VALUES (@p0, @p1, @p2);
+UPDATE [Users] SET [AvatarUrl] = @p3, [CreatedAtUtc] = @p4, [DisplayName] = @p5, [Email] = @p6, [ExternalId] = @p7, [IsActive] = @p8, [LastSeenUtc] = @p9, [ProviderName] = @p10, [UpdatedAtUtc] = @p11
+OUTPUT 1
+WHERE [Id] = @p12;
+2025-06-03 00:20:14.633 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: Notified others that User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" is online
+2025-06-03 00:20:14.633 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: Notified others that User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" is online
+2025-06-03 00:20:14.633 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 1609.4201 ms
+2025-06-03 00:20:14.633 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 1606.5900 ms
+2025-06-03 00:20:14.645 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0568 ms
+2025-06-03 00:20:14.651 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0536 ms
+2025-06-03 00:20:15.183 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 531.1496 ms
+2025-06-03 00:20:15.307 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 0.3518 ms
+2025-06-03 00:20:15.429 +07:00 [INF] (ChatApp.Application.Services.UserService) Fetching profile for current user "b5c30aa1-172a-4bd6-9579-d3d36c55ca68"
+2025-06-03 00:20:15.491 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__id_0
+2025-06-03 00:20:15.527 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (2ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [UserConnections] AS [u]
+        WHERE [u].[UserId] = @__userId_0) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-06-03 00:20:15.557 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 200 in 244.3334 ms
+2025-06-03 00:20:15.567 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0836 ms
+2025-06-03 00:20:15.574 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.5140 ms
+2025-06-03 00:20:15.612 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP CONNECT /chathub responded 401 in 0.3012 ms
+2025-06-03 00:20:15.618 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0695 ms
+2025-06-03 00:20:15.622 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.3885 ms
+2025-06-03 00:20:15.628 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 401 in 0.1532 ms
+2025-06-03 00:20:15.633 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub/negotiate responded 204 in 0.0781 ms
+2025-06-03 00:20:15.637 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub/negotiate responded 200 in 0.4261 ms
+2025-06-03 00:20:15.641 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0699 ms
+2025-06-03 00:20:15.646 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 0.7559 ms
+2025-06-03 00:20:15.650 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0671 ms
+2025-06-03 00:20:15.650 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0644 ms
+2025-06-03 00:20:15.658 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP POST /chathub responded 200 in 0.3736 ms
+2025-06-03 00:20:15.658 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 3.2734 ms
+2025-06-03 00:20:15.660 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" connected with ConnectionId VNwLy1KX_rfaXGAuKkoPIQ
+2025-06-03 00:20:15.666 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0717 ms
+2025-06-03 00:20:15.668 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[@__Context_ConnectionId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[ConnectionId], [u].[ConnectedAtUtc], [u].[UserId]
+FROM [UserConnections] AS [u]
+WHERE [u].[ConnectionId] = @__Context_ConnectionId_0
+2025-06-03 00:20:15.676 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[Id] = @__p_0
+2025-06-03 00:20:15.682 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Guid), @p12='?' (DbType = Guid), @p3='?' (Size = 2048), @p4='?' (DbType = DateTime2), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 256), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTime2), @p10='?' (Size = 50), @p11='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [UserConnections] ([ConnectionId], [ConnectedAtUtc], [UserId])
+VALUES (@p0, @p1, @p2);
+UPDATE [Users] SET [AvatarUrl] = @p3, [CreatedAtUtc] = @p4, [DisplayName] = @p5, [Email] = @p6, [ExternalId] = @p7, [IsActive] = @p8, [LastSeenUtc] = @p9, [ProviderName] = @p10, [UpdatedAtUtc] = @p11
+OUTPUT 1
+WHERE [Id] = @p12;
+2025-06-03 00:20:15.688 +07:00 [INF] (ChatApp.Api.Hubs.ChatHub) SignalR: Notified others that User "b5c30aa1-172a-4bd6-9579-d3d36c55ca68" is online
+2025-06-03 00:20:15.688 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 1031.1001 ms
+2025-06-03 00:20:15.696 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0582 ms
+2025-06-03 00:20:45.028 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /api/users responded 204 in 0.9026 ms
+2025-06-03 00:20:45.033 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /api/users responded 404 in 0.6682 ms
+2025-06-03 00:21:45.674 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 90003.7284 ms
+2025-06-03 00:21:45.684 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.1217 ms
+2025-06-03 00:21:45.704 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 90002.9084 ms
+2025-06-03 00:21:45.761 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0555 ms
+2025-06-03 00:23:15.698 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 90005.9513 ms
+2025-06-03 00:23:15.705 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0849 ms
+2025-06-03 00:23:15.776 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 90007.4770 ms
+2025-06-03 00:23:15.796 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0774 ms
+2025-06-03 00:24:12.207 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 56498.1859 ms
+2025-06-03 00:24:45.808 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /chathub responded 200 in 90007.7591 ms
+2025-06-03 00:24:45.821 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /chathub responded 204 in 0.0970 ms

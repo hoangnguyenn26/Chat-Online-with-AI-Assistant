@@ -1,0 +1,15 @@
+<div class="message-input-container">
+  <!-- (Optional) Nút đính kèm file, emoji -->
+  <textarea matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="5"
+            [(ngModel)]="newMessageContent"
+            (keydown.enter)="sendMessageOnEnter($event)"
+            placeholder="Type a message..."
+            class="message-input-textarea"></textarea>
+  <button mat-icon-button color="primary" (click)="sendMessage()" [disabled]="!newMessageContent.trim()">
+    <mat-icon>send</mat-icon>
+  </button>
+</div>

@@ -1,0 +1,20 @@
+.chat-container {
+  display: flex;
+  height: 100%; // Quan trọng
+  overflow: hidden;
+}
+.user-list-pane {
+  width: 300px; // Độ rộng cố định cho user list
+  min-width: 250px;
+  border-right: 1px solid #ccc;
+  // Thêm logic ẩn trên mobile và hiển thị nút back trên ChatWindow
+}
+.chat-window-pane {
+  flex-grow: 1; // Chiếm phần còn lại
+}
+
+// Responsive cho mobile
+@media (max-width: 767px) {
+  .user-list-pane {
+  }
+}
