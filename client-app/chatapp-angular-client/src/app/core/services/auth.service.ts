@@ -115,7 +115,7 @@ export class AuthService {
 
   public getCurrentToken(): string | null {
     // Ưu tiên token trong bộ nhớ, sau đó mới đến localStorage
-    return this._authToken || this.getLocalStorageItem(this.TOKEN_KEY);
+    return this._authToken || localStorage.getItem('app_auth_token');
   }
 
   loginWithGoogle(): void {

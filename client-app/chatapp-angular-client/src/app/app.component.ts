@@ -1,6 +1,8 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterModule, NavigationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { AuthService } from './core/services/auth.service'; 
+import { SignalRService } from './core/services/signalr.service'; 
+import { ChatStateService } from './core/services/chat-state.service'; 
 
 @Component({
   selector: 'app-root',
@@ -9,17 +11,19 @@ import { filter } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit { 
   title = 'ChatApp Angular Client';
 
-  private router = inject(Router);
+  // Inject services to ensure they are created
+  private authService = inject(AuthService);
+  private signalRService = inject(SignalRService);
+  private chatStateService = inject(ChatStateService);
+
+  constructor() {
+
+  }
 
   ngOnInit(): void {
-    // Log router events for debugging
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationStart)
-    ).subscribe((event: NavigationStart) => {
-      console.log('🚦 Router NavigationStart:', event.url);
-    });
+    console.log('AppComponent initialized. AuthService, SignalRService, ChatStateService should be active.');
   }
 }

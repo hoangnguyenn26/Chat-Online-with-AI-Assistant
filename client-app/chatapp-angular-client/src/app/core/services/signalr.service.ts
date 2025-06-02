@@ -3,7 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service'; 
-
+import { PrivateMessageDto } from '../models/message.dtos';
 export interface UserPresenceEvent {
   userId: string;
   isOnline: boolean;
@@ -21,6 +21,9 @@ export class SignalRService implements OnDestroy {
 
   private userPresenceChangedSubject = new Subject<UserPresenceEvent>();
   public userPresenceChanged$ = this.userPresenceChangedSubject.asObservable();
+
+  private privateMessageReceivedSubject = new Subject<PrivateMessageDto>();
+  public privateMessageReceived$ = this.privateMessageReceivedSubject.asObservable();
 
   private connectionStateSubject = new BehaviorSubject<boolean>(false);
   public isConnected$ = this.connectionStateSubject.asObservable();
@@ -43,7 +46,7 @@ export class SignalRService implements OnDestroy {
     }
 
     const token = this.authService.getCurrentToken();
-
+    
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(this.HUB_URL, {
         accessTokenFactory: () => this.authService.getCurrentToken() || ''
@@ -94,6 +97,10 @@ export class SignalRService implements OnDestroy {
       this.userPresenceChangedSubject.next({ userId, isOnline: false });
     });
 
+    this.hubConnection.on('ReceivePrivateMessage', (message: PrivateMessageDto) => {
+      console.log(`SignalRService: Received private message: ${message.content}`);
+      this.privateMessageReceivedSubject.next(message);
+    });
   }
 
   public stopConnection(): void {
@@ -104,6 +111,22 @@ export class SignalRService implements OnDestroy {
           this.connectionStateSubject.next(false);
         })
         .catch(err => console.error('SignalRService: Error while stopping connection: ' + err));
+    }
+  }
+
+  public async sendPrivateMessage(receiverUserId: string, content: string): Promise<void> {
+    if (this.hubConnection?.state !== signalR.HubConnectionState.Connected) {
+      console.warn('SignalRService: Cannot send message. Connection not established.');
+      return Promise.reject('SignalR connection not available.'); // Trả về Promise bị reject
+    }
+
+    try {
+      await this.hubConnection.invoke('SendPrivateMessage', receiverUserId, content);
+      console.log(`SignalRService: Private message sent to ${receiverUserId}`);
+    } catch (err) {
+      console.error('SignalRService: Error sending private message: ', err);
+
+      return Promise.reject(err);
     }
   }
 
@@ -119,5 +142,8 @@ export class SignalRService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.stopConnection();
+    this.userPresenceChangedSubject.complete();
+    this.privateMessageReceivedSubject.complete();
+    this.connectionStateSubject.complete();
   }
 }

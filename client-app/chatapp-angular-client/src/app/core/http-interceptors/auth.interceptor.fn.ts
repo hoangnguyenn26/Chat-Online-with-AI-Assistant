@@ -9,9 +9,9 @@ export const authInterceptorFn: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+  const authService = inject(AuthService); 
   const authToken = authService.getCurrentToken();
+  const router = inject(Router);
 
   let authReq = req;
   if (authToken && !req.url.includes('/auth/login') && !req.url.includes('/auth/register')) {

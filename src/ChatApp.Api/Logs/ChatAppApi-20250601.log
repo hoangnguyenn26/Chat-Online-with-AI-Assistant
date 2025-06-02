@@ -1,0 +1,182 @@
+2025-06-01 17:54:27.470 +07:00 [INF] () Starting ChatApp API web host
+2025-06-01 17:54:28.947 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 17:54:29.281 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 17:54:29.286 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 17:54:29.377 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 17:54:29.381 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 17:54:29.383 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 17:57:45.524 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 61.7619 ms
+2025-06-01 17:57:49.102 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 560.7504 ms
+2025-06-01 17:57:49.806 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 17:57:49.811 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 697.3747 ms
+2025-06-01 17:57:56.226 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 153.0253 ms
+2025-06-01 17:57:56.243 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 17:57:56.246 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 9.6761 ms
+2025-06-01 17:58:01.772 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 158.6973 ms
+2025-06-01 17:58:01.785 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 17:58:01.788 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 6.2912 ms
+2025-06-01 17:59:47.657 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 307.2851 ms
+2025-06-01 17:59:47.669 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 17:59:47.672 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 3.3554 ms
+2025-06-01 18:03:11.677 +07:00 [INF] () Starting ChatApp API web host
+2025-06-01 18:03:12.515 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:03:12.524 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:03:12.597 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:03:12.600 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:03:12.603 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:03:51.652 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:03:51.670 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 244.3187 ms
+2025-06-01 18:03:54.600 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 469.4597 ms
+2025-06-01 18:03:54.625 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:03:54.629 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 15.5772 ms
+2025-06-01 18:04:00.884 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application is shutting down...
+2025-06-01 18:04:30.230 +07:00 [INF] () Starting ChatApp API web host
+2025-06-01 18:04:31.544 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:04:31.552 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:04:31.632 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:04:31.634 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:04:31.637 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:04:39.818 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:04:39.837 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 621.2696 ms
+2025-06-01 18:04:42.584 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 406.2989 ms
+2025-06-01 18:04:42.605 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:04:42.609 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 12.1867 ms
+2025-06-01 18:06:45.795 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:06:45.830 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:06:45.904 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:06:45.907 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:06:45.909 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:07:54.606 +07:00 [INF] () Starting ChatApp API web host
+2025-06-01 18:07:55.283 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:07:55.530 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:07:55.535 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:07:55.614 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:07:55.616 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:07:55.619 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:08:10.958 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:08:10.975 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 234.0660 ms
+2025-06-01 18:08:13.956 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 419.8471 ms
+2025-06-01 18:08:13.977 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:08:13.980 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 11.4514 ms
+2025-06-01 18:10:10.751 +07:00 [INF] () Starting ChatApp API web host
+2025-06-01 18:10:11.342 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:10:11.557 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:10:11.563 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:10:11.637 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:10:11.640 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:10:11.642 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:11:24.685 +07:00 [INF] () Starting ChatApp API web host
+2025-06-01 18:11:25.633 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:11:25.869 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:11:25.874 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:11:25.947 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:11:25.951 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:11:25.953 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:12:00.750 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:12:00.766 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 614.6437 ms
+2025-06-01 18:12:03.424 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 390.7331 ms
+2025-06-01 18:12:03.444 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:12:03.446 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 10.2338 ms
+2025-06-01 18:13:43.408 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:13:43.680 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:13:43.685 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:13:43.758 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:13:43.762 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:13:43.764 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:13:59.902 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:14:00.160 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:14:00.164 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:14:00.237 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:14:00.240 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:14:00.243 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:14:10.334 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 471.4147 ms
+2025-06-01 18:14:10.903 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:14:10.915 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 556.2418 ms
+2025-06-01 18:17:40.829 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:17:41.119 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:17:41.124 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:17:41.283 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:17:41.286 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:17:41.289 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:19:05.661 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:19:05.911 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:19:05.915 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:19:05.994 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:19:05.995 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:19:05.996 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:19:50.210 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:19:50.528 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:19:50.532 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:19:50.603 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:19:50.605 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:19:50.607 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:19:56.589 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 432.0756 ms
+2025-06-01 18:19:57.155 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:19:57.164 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 553.0090 ms
+2025-06-01 18:22:51.089 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:22:51.092 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 13.2434 ms
+2025-06-01 18:22:55.810 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 281.5528 ms
+2025-06-01 18:22:55.824 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:22:55.825 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 6.4974 ms
+2025-06-01 18:23:15.964 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 106.9897 ms
+2025-06-01 18:23:54.647 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 123.0025 ms
+2025-06-01 18:24:08.579 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:24:08.855 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:24:08.859 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:24:08.936 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:24:08.938 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:24:08.939 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:24:19.434 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:24:19.452 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 261.7213 ms
+2025-06-01 18:24:22.270 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 409.0174 ms
+2025-06-01 18:24:22.287 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:24:22.289 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 9.1589 ms
+2025-06-01 18:27:34.222 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:27:34.517 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:27:34.520 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:27:34.599 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:27:34.600 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:27:34.601 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:27:48.450 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 52.6087 ms
+2025-06-01 18:27:51.688 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 439.8135 ms
+2025-06-01 18:27:52.236 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:27:52.240 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 539.7356 ms
+2025-06-01 18:30:14.922 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 368.0773 ms
+2025-06-01 18:30:14.939 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:30:14.942 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 10.9631 ms
+2025-06-01 18:33:49.796 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET / responded 404 in 0.7377 ms
+2025-06-01 18:35:08.567 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:35:08.879 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:35:08.883 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:35:08.978 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:35:08.979 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:35:08.981 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:35:34.314 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:35:34.330 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 237.9846 ms
+2025-06-01 18:36:21.955 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 456.9985 ms
+2025-06-01 18:36:21.979 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:36:21.981 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 12.3629 ms
+2025-06-01 18:45:54.757 +07:00 [INF] () ChatApp API is starting up...
+2025-06-01 18:45:55.034 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: https://localhost:7247
+2025-06-01 18:45:55.039 +07:00 [INF] (Microsoft.Hosting.Lifetime) Now listening on: http://localhost:5066
+2025-06-01 18:45:55.125 +07:00 [INF] (Microsoft.Hosting.Lifetime) Application started. Press Ctrl+C to shut down.
+2025-06-01 18:45:55.128 +07:00 [INF] (Microsoft.Hosting.Lifetime) Hosting environment: Development
+2025-06-01 18:45:55.129 +07:00 [INF] (Microsoft.Hosting.Lifetime) Content root path: D:\ChatApp\src\ChatApp.Api
+2025-06-01 18:46:17.549 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Initiating Google login. Return URL (client-side): /
+2025-06-01 18:46:17.587 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/login-google responded 302 in 254.6844 ms
+2025-06-01 18:46:20.494 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /signin-google responded 302 in 455.9762 ms
+2025-06-01 18:46:20.535 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Received Google callback.
+2025-06-01 18:46:20.538 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Google authentication successful.
+2025-06-01 18:46:20.541 +07:00 [INF] (ChatApp.Application.Services.UserService) Finding or creating user from OAuth. Provider: Google, ExternalId: 110932885050862021885, Email: hoangnguyenn268@gmail.com
+2025-06-01 18:46:22.367 +07:00 [INF] (Microsoft.EntityFrameworkCore.Database.Command) Executed DbCommand (92ms) [Parameters=[@__providerName_0='?' (Size = 50), @__externalId_1='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[AvatarUrl], [u].[CreatedAtUtc], [u].[DisplayName], [u].[Email], [u].[ExternalId], [u].[IsActive], [u].[LastSeenUtc], [u].[ProviderName], [u].[UpdatedAtUtc]
+FROM [Users] AS [u]
+WHERE [u].[ProviderName] = @__providerName_0 AND [u].[ExternalId] = @__externalId_1
+2025-06-01 18:46:22.447 +07:00 [INF] (ChatApp.Application.Services.UserService) Existing user found by ExternalId 110932885050862021885 for Provider Google. Updating info if changed.
+2025-06-01 18:46:22.479 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" (hoangnguyenn268@gmail.com) processed from Google callback via UserService.
+2025-06-01 18:46:22.862 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) Generating JWT token for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa" - hoangnguyenn268@gmail.com
+2025-06-01 18:46:23.136 +07:00 [INF] (ChatApp.Infrastructure.Services.TokenService) JWT token generated successfully for User "21c33099-ee6b-4e62-83a8-f7c51c0be4fa". Token Expiry: "2025-06-01T12:46:23.0826050Z"
+2025-06-01 18:46:23.139 +07:00 [INF] (ChatApp.Api.Controllers.AuthController) Redirecting to client with token: http://localhost:4200/auth-callback?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjMTdjZjhhZS1jOWQ5LTRlNTUtYWI0YS00Njc2MDBmZmU0YWEiLCJzdWIiOiIyMWMzMzA5OS1lZTZiLTRlNjItODNhOC1mN2M1MWMwYmU0ZmEiLCJlbWFpbCI6ImhvYW5nbmd1eWVubjI2OEBnbWFpbC5jb20iLCJuYW1lIjoiTmd1ecOqbiBIb8OgbmciLCJ1aWQiOiIyMWMzMzA5OS1lZTZiLTRlNjItODNhOC1mN2M1MWMwYmU0ZmEiLCJhdmF0YXIiOiIiLCJuYmYiOjE3NDg3NzgzODMsImV4cCI6MTc0ODc4MTk4MywiaWF0IjoxNzQ4Nzc4MzgzLCJpc3MiOiJDaGF0QXBwQXBpIiwiYXVkIjoiQ2hhdEFwcENsaWVudCJ9.y-LuDzU9sC8OvThD3GGFkfxIGlTk-akObDeQR3tXGsw
+2025-06-01 18:46:23.143 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /Auth/google-callback responded 302 in 2638.5544 ms
+2025-06-01 18:46:23.449 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP OPTIONS /auth/me responded 204 in 2.0542 ms
+2025-06-01 18:46:23.456 +07:00 [INF] (Serilog.AspNetCore.RequestLoggingMiddleware) HTTP GET /auth/me responded 302 in 3.5812 ms
