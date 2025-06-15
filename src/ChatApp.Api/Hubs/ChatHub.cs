@@ -1,156 +1,110 @@
-﻿using ChatApp.Application.Dtos.Messages;
+﻿using AutoMapper;
+using ChatApp.Application.Dtos.Messages;
+using ChatApp.Application.Interfaces;
+using ChatApp.Application.Interfaces.Services;
 using ChatApp.Domain.Entities;
-using ChatApp.Infrastructure.Persistence.DbContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace ChatApp.Api.Hubs
 {
     [Authorize]
     public class ChatHub : Hub
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
+        private readonly IAIService _aiService;
+        private readonly IMapper _mapper;
         private readonly ILogger<ChatHub> _logger;
 
-        public ChatHub(ApplicationDbContext context, ILogger<ChatHub> logger)
+        private static readonly Guid AI_USER_ID_PLACEHOLDER = new Guid("00000000-0000-0000-0000-0000000000AI");
+        private const string AI_DISPLAY_NAME = "AI Assistant";
+
+
+        public ChatHub(
+            IUnitOfWork unitOfWork,
+            IUserService userService,
+            IAIService aiService,
+            IMapper mapper,
+            ILogger<ChatHub> logger)
         {
-            _context = context;
-            _logger = logger;
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _aiService = aiService ?? throw new ArgumentNullException(nameof(aiService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override async Task OnConnectedAsync()
         {
-            var userIdString = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-
+            var userIdString = Context.UserIdentifier;
             if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))
             {
-                _logger.LogWarning("SignalR: User connected without valid UserId in claims. ConnectionId: {ConnectionId}", Context.ConnectionId);
+                _logger.LogWarning("SignalR OnConnectedAsync: UserId not found or invalid in claims. ConnectionId: {ConnectionId}", Context.ConnectionId);
                 Context.Abort();
                 return;
             }
 
             _logger.LogInformation("SignalR: User {UserId} connected with ConnectionId {ConnectionId}", userId, Context.ConnectionId);
 
-            // 1. Lưu ConnectionId và UserId vào UserConnections
-            var existingConnection = await _context.UserConnections
-                .FirstOrDefaultAsync(uc => uc.ConnectionId == Context.ConnectionId);
-
-            if (existingConnection == null)
-            {
-                var userConnection = new UserConnection
-                {
-                    ConnectionId = Context.ConnectionId,
-                    UserId = userId,
-                    ConnectedAtUtc = DateTime.UtcNow
-                };
-                _context.UserConnections.Add(userConnection);
-            }
-            else
-            {
-                existingConnection.UserId = userId;
-                existingConnection.ConnectedAtUtc = DateTime.UtcNow;
-            }
-
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null)
-            {
-                user.LastSeenUtc = DateTime.UtcNow;
-                _context.Users.Update(user);
-            }
-
-            await _context.SaveChangesAsync();
+            var userConnection = new UserConnection { ConnectionId = Context.ConnectionId, UserId = userId, ConnectedAtUtc = DateTime.UtcNow };
+            await _unitOfWork.UserConnectionRepository.AddAsync(userConnection);
+            await _userService.UpdateUserPresenceAsync(userId, isOnline: true);
+            await _unitOfWork.SaveChangesAsync(); // Save UserConnection and User presence update
 
             await Clients.Others.SendAsync("UserOnline", userId.ToString());
             _logger.LogInformation("SignalR: Notified others that User {UserId} is online", userId);
-
 
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var userIdString = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-            Guid? userId = null;
-            if (!string.IsNullOrEmpty(userIdString) && Guid.TryParse(userIdString, out Guid parsedUserId))
+            var connectionId = Context.ConnectionId;
+            var connection = await _unitOfWork.UserConnectionRepository.GetByIdAsync(connectionId);
+
+            if (connection != null)
             {
-                userId = parsedUserId;
+                var userId = connection.UserId;
+                _logger.LogInformation("SignalR: User {UserId} (ConnectionId: {ConnectionId}) disconnected. Exception: {ExceptionMessage}",
+                    userId, connectionId, exception?.Message ?? "N/A");
+
+                await _unitOfWork.UserConnectionRepository.RemoveAsync(connection);
+
+                bool stillHasOtherConnections = await _unitOfWork.UserConnectionRepository.UserHasConnectionsAsync(userId);
+                if (!stillHasOtherConnections)
+                {
+                    await _userService.UpdateUserPresenceAsync(userId, isOnline: false);
+                    await Clients.Others.SendAsync("UserOffline", userId.ToString());
+                    _logger.LogInformation("SignalR: Notified others that User {UserId} is offline (last connection).", userId);
+                }
+                await _unitOfWork.SaveChangesAsync();
             }
-
-            _logger.LogInformation("SignalR: User {UserId} (ConnectionId: {ConnectionId}) disconnected. Exception: {ExceptionMessage}",
-                userId?.ToString() ?? "Unknown", Context.ConnectionId, exception?.Message ?? "N/A");
-
-            // 1. Xóa ConnectionId khỏi UserConnections
-            var userConnection = await _context.UserConnections
-                .FirstOrDefaultAsync(uc => uc.ConnectionId == Context.ConnectionId);
-
-            if (userConnection != null)
+            else
             {
-                _context.UserConnections.Remove(userConnection);
-
-                // 2. Cập nhật Users.LastSeenUtc
-                bool stillHasOtherConnections = await _context.UserConnections
-                    .AnyAsync(uc => uc.UserId == userConnection.UserId && uc.ConnectionId != Context.ConnectionId);
-
-                if (!stillHasOtherConnections && userConnection.UserId != Guid.Empty)
-                {
-                    var user = await _context.Users.FindAsync(userConnection.UserId);
-                    if (user != null)
-                    {
-                        user.LastSeenUtc = DateTime.UtcNow;
-                        _context.Users.Update(user);
-                    }
-                }
-                await _context.SaveChangesAsync();
-
-                // 3. Thông báo cho các client khác user này đã offline
-                if (!stillHasOtherConnections && userConnection.UserId != Guid.Empty)
-                {
-                    await Clients.Others.SendAsync("UserOffline", userConnection.UserId.ToString());
-                    _logger.LogInformation("SignalR: Notified others that User {UserId} is offline (last connection).", userConnection.UserId);
-                }
+                _logger.LogWarning("SignalR OnDisconnectedAsync: ConnectionId {ConnectionId} not found in repository.", connectionId);
             }
             await base.OnDisconnectedAsync(exception);
         }
 
         public async Task SendPrivateMessage(string receiverUserIdString, string messageContent)
         {
-            var senderIdString = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(senderIdString) || !Guid.TryParse(senderIdString, out Guid senderId))
+            var senderIdString = Context.UserIdentifier;
+            if (!Guid.TryParse(senderIdString, out Guid senderId) || !Guid.TryParse(receiverUserIdString, out Guid receiverId))
             {
-                _logger.LogWarning("SendPrivateMessage: SenderId not found or invalid in claims for ConnectionId {ConnectionId}.", Context.ConnectionId);
-                await Clients.Caller.SendAsync("ReceiveMessageError", "Authentication required to send messages.");
+                _logger.LogWarning("SendPrivateMessage: Invalid SenderId or ReceiverUserId format.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(messageContent) || senderId == receiverId)
+            {
+                _logger.LogWarning("SendPrivateMessage: Empty message or sender is receiver. Sender: {SenderId}", senderId);
                 return;
             }
 
-            if (string.IsNullOrEmpty(receiverUserIdString) || !Guid.TryParse(receiverUserIdString, out Guid receiverId))
-            {
-                _logger.LogWarning("SendPrivateMessage: Invalid ReceiverUserId format '{ReceiverUserIdString}' from Sender {SenderId}.", receiverUserIdString, senderId);
-                await Clients.Caller.SendAsync("ReceiveMessageError", "Invalid recipient ID.");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(messageContent))
-            {
-                _logger.LogWarning("SendPrivateMessage: Empty message content from Sender {SenderId} to Receiver {ReceiverId}.", senderId, receiverId);
-                await Clients.Caller.SendAsync("ReceiveMessageError", "Message content cannot be empty.");
-                return;
-            }
-
-            if (senderId == receiverId)
-            {
-                _logger.LogWarning("SendPrivateMessage: Sender {SenderId} attempting to send message to themselves.", senderId);
-                await Clients.Caller.SendAsync("ReceiveMessageError", "Cannot send message to yourself in this context.");
-                return;
-            }
-
-            _logger.LogInformation("User {SenderId} sending private message to {ReceiverId}: '{Content}'", senderId, receiverId, messageContent.Length > 20 ? messageContent.Substring(0, 20) + "..." : messageContent);
-
-            var sender = await _context.Users.FindAsync(senderId);
+            var sender = await _unitOfWork.UserRepository.GetByIdAsync(senderId, tracking: false);
             if (sender == null)
             {
-                _logger.LogError("SendPrivateMessage: Sender user with Id {SenderId} not found in database.", senderId);
+                _logger.LogError("SendPrivateMessage: Sender user {SenderId} not found.", senderId);
                 return;
             }
 
@@ -164,38 +118,144 @@ namespace ChatApp.Api.Hubs
                 IsRead = false
             };
 
-            _context.PrivateMessages.Add(privateMessage);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.PrivateMessageRepository.AddAsync(privateMessage);
+            await _unitOfWork.SaveChangesAsync();
 
-            var messageDto = new PrivateMessageDto
-            {
-                Id = privateMessage.Id,
-                SenderId = sender.Id,
-                SenderDisplayName = sender.DisplayName,
-                SenderAvatarUrl = sender.AvatarUrl,
-                ReceiverId = receiverId,
-                Content = privateMessage.Content,
-                TimestampUtc = privateMessage.TimestampUtc,
-                IsFromAI = privateMessage.IsFromAI,
-                IsRead = privateMessage.IsRead
-            };
+            var messageDto = _mapper.Map<PrivateMessageDto>(privateMessage);
+            messageDto.SenderDisplayName = sender.DisplayName;
+            messageDto.SenderAvatarUrl = sender.AvatarUrl;
 
-            var receiverConnections = await _context.UserConnections
-                .Where(uc => uc.UserId == receiverId)
-                .Select(uc => uc.ConnectionId)
-                .ToListAsync();
-
+            var receiverConnections = (await _unitOfWork.UserConnectionRepository.GetByUserIdAsync(receiverId))
+                                       .Select(uc => uc.ConnectionId)
+                                       .ToList();
             if (receiverConnections.Any())
             {
-                _logger.LogInformation("Sending message {MessageId} to Receiver {ReceiverId} connections: {ConnectionIds}", messageDto.Id, receiverId, string.Join(", ", receiverConnections));
                 await Clients.Clients(receiverConnections).SendAsync("ReceivePrivateMessage", messageDto);
             }
-            else
-            {
-                _logger.LogInformation("Receiver {ReceiverId} is not currently connected. Message {MessageId} stored.", receiverId, messageDto.Id);
-            }
-            _logger.LogInformation("Sending message {MessageId} back to Sender {SenderId} (Connection: {ConnectionId})", messageDto.Id, senderId, Context.ConnectionId);
             await Clients.Caller.SendAsync("ReceivePrivateMessage", messageDto);
+        }
+
+        public async Task AskAIInPrivateChat(string chatPartnerIdString, string userQuestion)
+        {
+            var currentUserIdString = Context.UserIdentifier;
+            if (!Guid.TryParse(currentUserIdString, out Guid currentUserId) ||
+                !Guid.TryParse(chatPartnerIdString, out Guid chatPartnerId) ||
+                string.IsNullOrWhiteSpace(userQuestion))
+            {
+                _logger.LogWarning("AskAIInPrivateChat: Invalid parameters. CurrentUserId: {CurrentUserId}, PartnerId: {PartnerId}, Question Empty: {IsQuestionEmpty}",
+                    currentUserIdString, chatPartnerIdString, string.IsNullOrWhiteSpace(userQuestion));
+                return;
+            }
+
+            _logger.LogInformation("User {UserId} asking AI in chat with {PartnerId}: '{QuestionStart}'",
+                currentUserId, chatPartnerId, userQuestion.Substring(0, Math.Min(userQuestion.Length, 50)));
+
+            // This makes the AI's response appear more naturally in the flow.
+            var userQuestionAsMessage = new PrivateMessage
+            {
+                SenderId = currentUserId,
+                ReceiverId = chatPartnerId, // Message directed to the human partner
+                Content = $" (Question for AI): {userQuestion}", // Indicate it's a question for AI
+                TimestampUtc = DateTime.UtcNow,
+                IsFromAI = false,
+                IsRead = false // Partner might not read this if AI replies quickly
+            };
+            var userAsking = await _unitOfWork.UserRepository.GetByIdAsync(currentUserId, tracking: false);
+            if (userAsking == null) { _logger.LogError("AskAI: User {UserId} not found for sending question message.", currentUserId); return; }
+
+            await _unitOfWork.PrivateMessageRepository.AddAsync(userQuestionAsMessage);
+            // We will save all messages (user's question, AI's response) in one SaveChangesAsync call
+
+            var userQuestionMessageDto = _mapper.Map<PrivateMessageDto>(userQuestionAsMessage);
+            userQuestionMessageDto.SenderDisplayName = userAsking.DisplayName;
+            userQuestionMessageDto.SenderAvatarUrl = userAsking.AvatarUrl;
+
+            // Send user's question to both participants
+            await Clients.Caller.SendAsync("ReceivePrivateMessage", userQuestionMessageDto);
+            var partnerConnectionsForUserQuestion = (await _unitOfWork.UserConnectionRepository.GetByUserIdAsync(chatPartnerId))
+                                      .Select(uc => uc.ConnectionId).ToList();
+            if (partnerConnectionsForUserQuestion.Any())
+            {
+                await Clients.Clients(partnerConnectionsForUserQuestion).SendAsync("ReceivePrivateMessage", userQuestionMessageDto);
+            }
+
+
+            // 2. Get AI response
+            var aiResponseContent = await _aiService.GetChatCompletionAsync(userQuestion, currentUserId);
+            if (string.IsNullOrWhiteSpace(aiResponseContent))
+            {
+                aiResponseContent = "I'm sorry, I couldn't process that request.";
+            }
+
+            // 3. Prepare AI's response DTO to be sent to both users
+            var aiResponseTimestamp = DateTime.UtcNow;
+            var aiMessageDto = new PrivateMessageDto
+            {
+                Id = Guid.NewGuid(),
+                SenderId = AI_USER_ID_PLACEHOLDER,
+                SenderDisplayName = AI_DISPLAY_NAME,
+                SenderAvatarUrl = null,
+                ReceiverId = currentUserId,
+                Content = aiResponseContent,
+                TimestampUtc = aiResponseTimestamp,
+                IsFromAI = true,
+                IsRead = false
+            };
+
+            // Save AI's response as a message FROM AI TO the current user
+            var aiMessageToCurrentUserDb = new PrivateMessage
+            {
+                Id = aiMessageDto.Id, // Use the same ID for consistency
+                SenderId = AI_USER_ID_PLACEHOLDER, // Or your actual AI User ID from DB
+                ReceiverId = currentUserId,
+                Content = aiResponseContent,
+                TimestampUtc = aiResponseTimestamp,
+                IsFromAI = true,
+                IsRead = false // User is about to receive it
+            };
+            await _unitOfWork.PrivateMessageRepository.AddAsync(aiMessageToCurrentUserDb);
+
+            // Also save AI's response as a message FROM AI TO the chat partner
+            var aiMessageToPartnerDb = new PrivateMessage
+            {
+                Id = Guid.NewGuid(), // New ID for this instance
+                SenderId = AI_USER_ID_PLACEHOLDER,
+                ReceiverId = chatPartnerId,
+                Content = aiResponseContent, // Partner sees the same direct AI response
+                TimestampUtc = aiResponseTimestamp,
+                IsFromAI = true,
+                IsRead = false
+            };
+            await _unitOfWork.PrivateMessageRepository.AddAsync(aiMessageToPartnerDb);
+
+            await _unitOfWork.SaveChangesAsync(); // Save all messages (user's question, AI's responses)
+
+            // 4. Send AI's response DTO to the original caller
+            _logger.LogInformation("Sending AI response to Caller {UserId}", currentUserId);
+            await Clients.Caller.SendAsync("ReceivePrivateMessage", aiMessageDto);
+
+            // 5. Send AI's response DTO to the chat partner
+            // Re-target the DTO for the partner
+            var aiMessageDtoForPartner = new PrivateMessageDto
+            {
+                Id = aiMessageToPartnerDb.Id, // Use the ID of the message saved for the partner
+                SenderId = AI_USER_ID_PLACEHOLDER,
+                SenderDisplayName = AI_DISPLAY_NAME,
+                SenderAvatarUrl = null,
+                ReceiverId = chatPartnerId, // Target the partner
+                Content = aiResponseContent,
+                TimestampUtc = aiResponseTimestamp,
+                IsFromAI = true,
+                IsRead = false
+            };
+
+            var partnerConnections = (await _unitOfWork.UserConnectionRepository.GetByUserIdAsync(chatPartnerId))
+                                      .Select(uc => uc.ConnectionId).ToList();
+            if (partnerConnections.Any())
+            {
+                _logger.LogInformation("Sending AI response to Partner {PartnerId}", chatPartnerId);
+                await Clients.Clients(partnerConnections).SendAsync("ReceivePrivateMessage", aiMessageDtoForPartner);
+            }
         }
     }
 }

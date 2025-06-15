@@ -19,7 +19,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
-
 try
 {
     Log.Information("Starting ChatApp API web host");
@@ -101,6 +100,9 @@ try
     var googleAuthSettings = builder.Configuration.GetSection("GoogleAuthSettings").Get<GoogleAuthSettings>()
                            ?? throw new InvalidOperationException("GoogleAuthSettings is not configured correctly.");
 
+    //OpenAPI
+    builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAISettings"));
+
     builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -159,7 +161,7 @@ try
     // Application Services
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<IUserService, UserService>();
-
+    builder.Services.AddScoped<IAIService, OpenAIService>();
     // Infrastructure Services (Repositories, UnitOfWork)
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
