@@ -1,10 +1,10 @@
 import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Cần cho [(ngModel)]
-import { MatInputModule } from '@angular/material/input'; // Cho matInput directive
+import { FormsModule } from '@angular/forms'; 
+import { MatInputModule } from '@angular/material/input'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { TextFieldModule } from '@angular/cdk/text-field'; // Cho cdkTextareaAutosize
+import { TextFieldModule } from '@angular/cdk/text-field'; 
 
 @Component({
   selector: 'app-message-input',
@@ -32,10 +32,9 @@ export class MessageInputComponent {
     }
   }
 
-  sendMessageOnEnter(event: Event): void {
-    const keyboardEvent = event as KeyboardEvent;
-    if (keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey) { // Gửi khi nhấn Enter, không gửi khi Shift+Enter
-      keyboardEvent.preventDefault(); // Ngăn xuống dòng mặc định của Enter trong textarea
+  sendMessageOnEnter(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) { // Gửi khi nhấn Enter, không gửi khi Shift+Enter
+      event.preventDefault(); // Ngăn xuống dòng mặc định của Enter trong textarea
       this.sendMessage();
     }
   }

@@ -1,29 +1,13 @@
 .chat-container {
   display: flex;
   height: 100%;
-  min-height: 0;
   overflow: hidden;
 }
 .user-list-pane {
   width: 300px;
   min-width: 250px;
   border-right: 1px solid #ccc;
-  background: #fff;
-  z-index: 2;
 }
 .chat-window-pane {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-// Responsive cho mobile
-@media (max-width: 767px) {
-  .user-list-pane {
-    display: none;
-  }
-  .chat-window-pane {
-    width: 100vw;
-  }
+  flex-grow: 1; 
 }

@@ -1,20 +1,17 @@
 <div class="chat-window-layout">
-  <!-- Phần User List sẽ được hiển thị bên cạnh hoặc như một phần của layout cha (ví dụ Shell) -->
-  <!-- Giả sử UserListComponent được đặt ở nơi khác và emit user được chọn -->
 
   <div class="chat-area" *ngIf="selectedChatPartner$ | async as partner; else noPartnerSelected">
     <mat-toolbar class="chat-header">
-      <button mat-icon-button (click)="goBackToList()" class="back-button" *ngIf="isMobileView"> <!-- Chỉ hiện nút back trên mobile -->
+      <button mat-icon-button (click)="goBackToList()" class="back-button" *ngIf="isMobileView"> 
         <mat-icon>arrow_back</mat-icon>
       </button>
       <img [src]="partner.avatarUrl || 'assets/images/default-avatar.png'" alt="Partner Avatar" class="partner-avatar">
       <span>{{ partner.displayName }}</span>
       <span class="toolbar-spacer"></span>
-      <!-- (Optional) Nút thông tin user, call... -->
     </mat-toolbar>
 
     <app-message-list
-      [messages]="(currentMessages$ | async) ?? []"
+      [messages]="(currentMessages$ | async) || []"
       [isLoadingHistory]="isLoadingHistory"
       (loadMoreHistory)="loadMoreMessages()">
     </app-message-list>
