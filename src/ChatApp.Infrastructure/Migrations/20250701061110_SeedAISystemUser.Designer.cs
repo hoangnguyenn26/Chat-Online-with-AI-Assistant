@@ -4,6 +4,7 @@ using ChatApp.Infrastructure.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250701061110_SeedAISystemUser")]
+    partial class SeedAISystemUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,12 +118,12 @@ namespace ChatApp.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c82dcc58-9f57-4419-8439-94dff46dba5a"),
-                            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAtUtc = new DateTime(2025, 7, 1, 6, 11, 9, 150, DateTimeKind.Utc).AddTicks(5703),
                             DisplayName = "AI Assistant",
                             Email = "ai@chatapp.system",
                             IsActive = true,
                             ProviderName = "System",
-                            UpdatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                            UpdatedAtUtc = new DateTime(2025, 7, 1, 6, 11, 9, 150, DateTimeKind.Utc).AddTicks(5703)
                         });
                 });
 

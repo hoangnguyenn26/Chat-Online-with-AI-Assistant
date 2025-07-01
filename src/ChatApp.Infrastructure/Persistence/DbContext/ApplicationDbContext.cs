@@ -66,6 +66,27 @@ namespace ChatApp.Infrastructure.Persistence.DbContext
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Cascade); // Xóa connection nếu User bị xóa
             });
+
+            // ----- SEED DATA CHO AI USER -----
+            var aiUserId = new Guid("C82DCC58-9F57-4419-8439-94DFF46DBA5A"); // Guid cố định cho AI
+            var now = DateTime.UtcNow;
+            var seedTimestamp = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            builder.Entity<User>().HasData(
+                new User
+                {
+                    Id = aiUserId,
+                    Email = "ai@chatapp.system", // Email duy nhất cho AI
+                    DisplayName = "AI Assistant",
+                    IsActive = true, // AI luôn active
+                    ExternalId = null, // Không có ExternalId
+                    ProviderName = "System", // Hoặc để null
+                    AvatarUrl = null, // Có thể thêm avatar cho AI sau
+                    LastSeenUtc = null, // AI không "seen"
+                    CreatedAtUtc = seedTimestamp, // Thời điểm seed
+                    UpdatedAtUtc = seedTimestamp
+                }
+            );
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
