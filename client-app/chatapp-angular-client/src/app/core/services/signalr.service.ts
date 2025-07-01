@@ -140,6 +140,20 @@ export class SignalRService implements OnDestroy {
     }
   }
 
+  public async askAIInPrivateChat(chatPartnerId: string, question: string): Promise<void> {
+    if (this.hubConnection?.state !== signalR.HubConnectionState.Connected) {
+      return Promise.reject('SignalR connection not available.');
+    }
+
+    try {
+      await this.hubConnection.invoke('AskAIInPrivateChat', chatPartnerId, question);
+      console.log(`SignalRService: AI query sent for chat with ${chatPartnerId}`);
+    } catch (err) {
+      console.error('SignalRService: Error sending AI query: ', err);
+      return Promise.reject(err);
+    }
+  }
+
   ngOnDestroy(): void {
     this.stopConnection();
     this.userPresenceChangedSubject.complete();

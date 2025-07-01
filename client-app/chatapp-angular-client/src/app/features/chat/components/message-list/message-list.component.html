@@ -4,14 +4,19 @@
   </div>
   <div *ngFor="let message of messages; let i = index; trackBy: trackByMessageId"
        class="message-item"
-       [ngClass]="{'own-message': message.senderId === currentUserId, 'other-message': message.senderId !== currentUserId}">
+      [ngClass]="{
+          'own-message': message.senderId === currentUserId,
+          'other-message': message.senderId !== currentUserId && !message.isFromAI,
+          'ai-message': message.isFromAI
+      }">
     <div class="message-bubble">
-      <div *ngIf="message.senderId !== currentUserId && showSenderName(message, messages, i)" class="sender-name">
+      <div *ngIf="message.isFromAI || (message.senderId !== currentUserId && showSenderName(message, messages, i))" class="sender-name">
         {{ message.senderDisplayName }}
       </div>
       <div class="message-content">{{ message.content }}</div>
       <div class="message-timestamp">{{ message.timestampUtc | date:'shortTime' }}</div>
     </div>
   </div>
+  
   <div #endOfMessages></div> <!-- Element để cuộn tới -->
 </div>

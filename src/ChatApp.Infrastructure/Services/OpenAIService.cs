@@ -64,6 +64,13 @@ namespace ChatApp.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error calling OpenAI API for prompt: '{PromptStart}'", userPrompt.Substring(0, Math.Min(userPrompt.Length, 50)));
+                
+                // Check if it's a quota exceeded error
+                if (ex.Message.Contains("exceeded your current quota") || ex.Message.Contains("insufficient_quota"))
+                {
+                    return "Sorry, the AI service is temporarily unavailable due to quota limits. Please contact the administrator to resolve this issue.";
+                }
+                
                 return $"Sorry, an error occurred while contacting the AI assistant. Please try again later.";
             }
         }

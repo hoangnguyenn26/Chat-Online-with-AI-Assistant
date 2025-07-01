@@ -135,6 +135,8 @@ namespace ChatApp.Api.Hubs
             await Clients.Caller.SendAsync("ReceivePrivateMessage", messageDto);
         }
 
+        // src/ChatApp.Api/Hubs/ChatHub.cs
+
         public async Task AskAIInPrivateChat(string chatPartnerIdString, string userQuestion)
         {
             var currentUserIdString = Context.UserIdentifier;
@@ -142,119 +144,115 @@ namespace ChatApp.Api.Hubs
                 !Guid.TryParse(chatPartnerIdString, out Guid chatPartnerId) ||
                 string.IsNullOrWhiteSpace(userQuestion))
             {
-                _logger.LogWarning("AskAIInPrivateChat: Invalid parameters. CurrentUserId: {CurrentUserId}, PartnerId: {PartnerId}, Question Empty: {IsQuestionEmpty}",
-                    currentUserIdString, chatPartnerIdString, string.IsNullOrWhiteSpace(userQuestion));
+                _logger.LogWarning("AskAIInPrivateChat: Invalid parameters.");
                 return;
             }
 
             _logger.LogInformation("User {UserId} asking AI in chat with {PartnerId}: '{QuestionStart}'",
                 currentUserId, chatPartnerId, userQuestion.Substring(0, Math.Min(userQuestion.Length, 50)));
 
-            // This makes the AI's response appear more naturally in the flow.
-            var userQuestionAsMessage = new PrivateMessage
-            {
-                SenderId = currentUserId,
-                ReceiverId = chatPartnerId, // Message directed to the human partner
-                Content = $" (Question for AI): {userQuestion}", // Indicate it's a question for AI
-                TimestampUtc = DateTime.UtcNow,
-                IsFromAI = false,
-                IsRead = false // Partner might not read this if AI replies quickly
-            };
+            // Lấy thông tin người dùng đang hỏi (cần cho việc tạo DTO)
             var userAsking = await _unitOfWork.UserRepository.GetByIdAsync(currentUserId, tracking: false);
-            if (userAsking == null) { _logger.LogError("AskAI: User {UserId} not found for sending question message.", currentUserId); return; }
-
-            await _unitOfWork.PrivateMessageRepository.AddAsync(userQuestionAsMessage);
-            // We will save all messages (user's question, AI's response) in one SaveChangesAsync call
-
-            var userQuestionMessageDto = _mapper.Map<PrivateMessageDto>(userQuestionAsMessage);
-            userQuestionMessageDto.SenderDisplayName = userAsking.DisplayName;
-            userQuestionMessageDto.SenderAvatarUrl = userAsking.AvatarUrl;
-
-            // Send user's question to both participants
-            await Clients.Caller.SendAsync("ReceivePrivateMessage", userQuestionMessageDto);
-            var partnerConnectionsForUserQuestion = (await _unitOfWork.UserConnectionRepository.GetByUserIdAsync(chatPartnerId))
-                                      .Select(uc => uc.ConnectionId).ToList();
-            if (partnerConnectionsForUserQuestion.Any())
+            if (userAsking == null)
             {
-                await Clients.Clients(partnerConnectionsForUserQuestion).SendAsync("ReceivePrivateMessage", userQuestionMessageDto);
+                _logger.LogError("AskAI: User {UserId} not found for sending question message.", currentUserId);
+                return;
             }
 
-
-            // 2. Get AI response
-            var aiResponseContent = await _aiService.GetChatCompletionAsync(userQuestion, currentUserId);
-            if (string.IsNullOrWhiteSpace(aiResponseContent))
+            // --- Bắt đầu Transaction (nếu cần, để đảm bảo tất cả tin nhắn được lưu cùng lúc) ---
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                aiResponseContent = "I'm sorry, I couldn't process that request.";
+                // 1. Lưu câu hỏi của User vào DB
+                var userQuestionAsMessage = new PrivateMessage
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = chatPartnerId,
+                    Content = $"(Question for AI): {userQuestion}",
+                    TimestampUtc = DateTime.UtcNow,
+                    IsFromAI = false,
+                    IsRead = false
+                };
+                await _unitOfWork.PrivateMessageRepository.AddAsync(userQuestionAsMessage);
+                await _unitOfWork.SaveChangesAsync(); // Lưu để có ID
+
+                // 2. Tạo DTO thủ công thay vì dùng AutoMapper ngay lúc này
+                var userQuestionMessageDto = new PrivateMessageDto
+                {
+                    Id = userQuestionAsMessage.Id,
+                    SenderId = userAsking.Id,
+                    SenderDisplayName = userAsking.DisplayName,
+                    SenderAvatarUrl = userAsking.AvatarUrl,
+                    ReceiverId = chatPartnerId,
+                    Content = userQuestionAsMessage.Content,
+                    TimestampUtc = userQuestionAsMessage.TimestampUtc,
+                    IsFromAI = false,
+                    IsRead = false
+                };
+                // -----------------------
+
+                // 3. Gửi câu hỏi của User đến các client
+                await Clients.Caller.SendAsync("ReceivePrivateMessage", userQuestionMessageDto);
+                var partnerConnectionsForUserQuestion = (await _unitOfWork.UserConnectionRepository.GetByUserIdAsync(chatPartnerId)).Select(uc => uc.ConnectionId).ToList();
+                if (partnerConnectionsForUserQuestion.Any())
+                {
+                    await Clients.Clients(partnerConnectionsForUserQuestion).SendAsync("ReceivePrivateMessage", userQuestionMessageDto);
+                }
+
+                // 4. Lấy phản hồi từ AI
+                var aiResponseContent = await _aiService.GetChatCompletionAsync(userQuestion, currentUserId);
+                if (string.IsNullOrWhiteSpace(aiResponseContent))
+                {
+                    aiResponseContent = "I'm sorry, I couldn't process that request.";
+                }
+
+                // 5. Lưu và Gửi phản hồi của AI
+                // Lấy thông tin AI User (nên cache lại thay vì query DB mỗi lần)
+                var aiUser = await _unitOfWork.UserRepository.GetByEmailAsync("ai@chatapp.system", tracking: false);
+                Guid aiUserId = aiUser?.Id ?? Guid.Empty;
+                string aiDisplayName = aiUser?.DisplayName ?? "AI Assistant";
+
+                var aiResponseTimestamp = DateTime.UtcNow;
+
+                // Lưu tin nhắn của AI cho người hỏi
+                var aiMessageToCurrentUserDb = new PrivateMessage { Id = Guid.NewGuid(), SenderId = aiUserId, ReceiverId = currentUserId, Content = aiResponseContent, TimestampUtc = aiResponseTimestamp, IsFromAI = true, IsRead = false };
+                await _unitOfWork.PrivateMessageRepository.AddAsync(aiMessageToCurrentUserDb);
+
+                // Lưu tin nhắn của AI cho người đối thoại
+                var aiMessageToPartnerDb = new PrivateMessage { Id = Guid.NewGuid(), SenderId = aiUserId, ReceiverId = chatPartnerId, Content = aiResponseContent, TimestampUtc = aiResponseTimestamp, IsFromAI = true, IsRead = false };
+                await _unitOfWork.PrivateMessageRepository.AddAsync(aiMessageToPartnerDb);
+
+                await _unitOfWork.SaveChangesAsync(); // Lưu 2 tin nhắn của AI
+
+                // Tạo DTO cho phản hồi của AI
+                var aiResponseMessageDto = new PrivateMessageDto
+                {
+                    Id = aiMessageToCurrentUserDb.Id,
+                    SenderId = aiUserId,
+                    SenderDisplayName = aiDisplayName,
+                    SenderAvatarUrl = aiUser?.AvatarUrl,
+                    ReceiverId = currentUserId, // Tin nhắn này là cho người hỏi
+                    Content = aiResponseContent,
+                    TimestampUtc = aiResponseTimestamp,
+                    IsFromAI = true
+                };
+
+                // Gửi phản hồi AI cho cả 2 client
+                await Clients.Caller.SendAsync("ReceivePrivateMessage", aiResponseMessageDto);
+                if (partnerConnectionsForUserQuestion.Any())
+                {
+                    // Thay đổi ReceiverId cho partner
+                    aiResponseMessageDto.ReceiverId = chatPartnerId;
+                    aiResponseMessageDto.Id = aiMessageToPartnerDb.Id;
+                    await Clients.Clients(partnerConnectionsForUserQuestion).SendAsync("ReceivePrivateMessage", aiResponseMessageDto);
+                }
+
+                await _unitOfWork.CommitTransactionAsync(transaction);
             }
-
-            // 3. Prepare AI's response DTO to be sent to both users
-            var aiResponseTimestamp = DateTime.UtcNow;
-            var aiMessageDto = new PrivateMessageDto
+            catch (Exception ex)
             {
-                Id = Guid.NewGuid(),
-                SenderId = AI_USER_ID_PLACEHOLDER,
-                SenderDisplayName = AI_DISPLAY_NAME,
-                SenderAvatarUrl = null,
-                ReceiverId = currentUserId,
-                Content = aiResponseContent,
-                TimestampUtc = aiResponseTimestamp,
-                IsFromAI = true,
-                IsRead = false
-            };
-
-            // Save AI's response as a message FROM AI TO the current user
-            var aiMessageToCurrentUserDb = new PrivateMessage
-            {
-                Id = aiMessageDto.Id, // Use the same ID for consistency
-                SenderId = AI_USER_ID_PLACEHOLDER, // Or your actual AI User ID from DB
-                ReceiverId = currentUserId,
-                Content = aiResponseContent,
-                TimestampUtc = aiResponseTimestamp,
-                IsFromAI = true,
-                IsRead = false // User is about to receive it
-            };
-            await _unitOfWork.PrivateMessageRepository.AddAsync(aiMessageToCurrentUserDb);
-
-            // Also save AI's response as a message FROM AI TO the chat partner
-            var aiMessageToPartnerDb = new PrivateMessage
-            {
-                Id = Guid.NewGuid(), // New ID for this instance
-                SenderId = AI_USER_ID_PLACEHOLDER,
-                ReceiverId = chatPartnerId,
-                Content = aiResponseContent, // Partner sees the same direct AI response
-                TimestampUtc = aiResponseTimestamp,
-                IsFromAI = true,
-                IsRead = false
-            };
-            await _unitOfWork.PrivateMessageRepository.AddAsync(aiMessageToPartnerDb);
-
-            await _unitOfWork.SaveChangesAsync(); // Save all messages (user's question, AI's responses)
-
-            // 4. Send AI's response DTO to the original caller
-            _logger.LogInformation("Sending AI response to Caller {UserId}", currentUserId);
-            await Clients.Caller.SendAsync("ReceivePrivateMessage", aiMessageDto);
-
-            // 5. Send AI's response DTO to the chat partner
-            // Re-target the DTO for the partner
-            var aiMessageDtoForPartner = new PrivateMessageDto
-            {
-                Id = aiMessageToPartnerDb.Id, // Use the ID of the message saved for the partner
-                SenderId = AI_USER_ID_PLACEHOLDER,
-                SenderDisplayName = AI_DISPLAY_NAME,
-                SenderAvatarUrl = null,
-                ReceiverId = chatPartnerId, // Target the partner
-                Content = aiResponseContent,
-                TimestampUtc = aiResponseTimestamp,
-                IsFromAI = true,
-                IsRead = false
-            };
-
-            var partnerConnections = (await _unitOfWork.UserConnectionRepository.GetByUserIdAsync(chatPartnerId))
-                                      .Select(uc => uc.ConnectionId).ToList();
-            if (partnerConnections.Any())
-            {
-                _logger.LogInformation("Sending AI response to Partner {PartnerId}", chatPartnerId);
-                await Clients.Clients(partnerConnections).SendAsync("ReceivePrivateMessage", aiMessageDtoForPartner);
+                _logger.LogError(ex, "Exception in AskAIInPrivateChat for user {UserId}", currentUserId);
+                await _unitOfWork.RollbackTransactionAsync(transaction);
             }
         }
     }

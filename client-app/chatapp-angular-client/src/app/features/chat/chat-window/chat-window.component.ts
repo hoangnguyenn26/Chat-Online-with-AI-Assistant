@@ -56,17 +56,27 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     );
   }
 
-  onMessageSent(content: string): void {
-    this.chatStateService.selectedChatPartner$.subscribe(partner => {
-      if (partner && content) {
-        console.log(`ChatWindow: Sending message to ${partner.displayName}: ${content}`);
-        this.signalRService.sendPrivateMessage(partner.id, content)
+  onMessageSent(payload: { content: string, isAiQuery: boolean }): void {
+    const partner = this.activeChatPartner;
+    if (!partner || !payload.content) return;
+
+    if (payload.isAiQuery) {
+        // Đây là câu hỏi cho AI
+        console.log(`ChatWindow: Sending AI query for chat with ${partner.displayName}: ${payload.content}`);
+        this.signalRService.askAIInPrivateChat(partner.id, payload.content)
+          .then(() => console.log('ChatWindow: AI query sent promise resolved.'))
+          .catch(err => {
+            console.error('ChatWindow: Failed to send AI query via SignalR', err);
+          });
+    } else {
+        // Đây là tin nhắn thường
+        console.log(`ChatWindow: Sending message to ${partner.displayName}: ${payload.content}`);
+        this.signalRService.sendPrivateMessage(partner.id, payload.content)
           .then(() => console.log('ChatWindow: Message sent promise resolved.'))
           .catch(err => {
             console.error('ChatWindow: Failed to send message via SignalR', err);
           });
-      }
-    }).unsubscribe();
+    }
   }
 
   async loadMoreMessages(): Promise<void> {

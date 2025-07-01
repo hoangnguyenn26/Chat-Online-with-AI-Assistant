@@ -1,5 +1,9 @@
 <div class="message-input-container">
-  <!-- (Optional) Nút đính kèm file, emoji -->
+  <!-- Nút AI Assistant -->
+  <button mat-icon-button (click)="onAIAssistClick()" matTooltip="Ask AI Assistant">
+    <mat-icon>smart_toy</mat-icon> 
+  </button>
+
   <textarea matInput
             cdkTextareaAutosize
             #autosize="cdkTextareaAutosize"
@@ -7,8 +11,9 @@
             cdkAutosizeMaxRows="5"
             [(ngModel)]="newMessageContent"
             (keydown.enter)="sendMessageOnEnter($event)"
-            placeholder="Type a message..."
+            [placeholder]="inputPlaceholder"
             class="message-input-textarea"></textarea>
+
   <button mat-icon-button color="primary" (click)="sendMessage()" [disabled]="!newMessageContent.trim()">
     <mat-icon>send</mat-icon>
   </button>
